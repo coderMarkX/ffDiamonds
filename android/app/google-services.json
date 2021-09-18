@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "273207745489",
+    "firebase_url": "https://ffdiamonds-3da0a-default-rtdb.firebaseio.com",
+    "project_id": "ffdiamonds-3da0a",
+    "storage_bucket": "ffdiamonds-3da0a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273207745489:android:2525f29ff68b1a85cf5ef0",
+        "android_client_info": {
+          "package_name": "com.example.ffdiamonds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "273207745489-11lof0gpjoqj211cn50fh68kvc0roigl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD5rRjb_vW0euhN7RwBfUs_BFe-XndiH0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "273207745489-11lof0gpjoqj211cn50fh68kvc0roigl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
