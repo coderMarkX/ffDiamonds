@@ -1,11 +1,13 @@
 // @dart=2.9
 import 'package:ffdiamonds/screens/activity/form.dart';
+import 'package:ffdiamonds/services/firebaseServices.dart';
 // import 'package:ffdiamonds/services/firebaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
+import 'package:ffdiamonds/utils/globadData.dart';
+import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
@@ -14,6 +16,21 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  setUser() async {
+    await FirebaseService.getInsideData('user', FirebaseService.getUser())
+        .then((dataSnapshot) async {
+      print(dataSnapshot.value);
+      userData = dataSnapshot.value;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setUser();
+    print(">>" + userData.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,10 +39,15 @@ class _HomeState extends State<Home> {
           child: SingleChildScrollView(
               child: Column(
         children: [
-          Utils.iosRoute(
-              context, RequestPage(), Utils.flatButton(context, 200, "Add")),
+          // Utils.iosRoute(
+          //     context,
+          //     RequestPage(),
+          //     Utils.flatButton(
+          //       "Add",
+          //       200.00,
+          //     )),
 
-          Utils.titleWIcon("Top YT", Icons.ac_unit),
+          // Utils.titleWIcon("Top YT", Icons.ac_unit),
 
           // //Featured YT
           // StreamBuilder(
