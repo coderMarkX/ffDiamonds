@@ -1,27 +1,25 @@
 // @dart=2.9
 import 'dart:io';
+import 'package:ffdiamonds/screens/navigation.dart';
 import 'package:ffdiamonds/services/FireBaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class RequestPage extends StatefulWidget {
+class ContactUs extends StatefulWidget {
   final String title = 'test';
   @override
-  State<StatefulWidget> createState() => _RequestPageState();
+  State<StatefulWidget> createState() => _ContactUsState();
 }
 
-class _RequestPageState extends State<RequestPage> {
+class _ContactUsState extends State<ContactUs> {
   final name = TextEditingController();
-  final url = TextEditingController();
+  final msg = TextEditingController();
   final phone = TextEditingController();
   File _image;
   final picker = ImagePicker();
@@ -41,10 +39,7 @@ class _RequestPageState extends State<RequestPage> {
           CupertinoActionSheetAction(
             child: Text(
               "Camera",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: "MontserratBold"),
+              style: TextStyle(color: Colors.black, fontSize: 16),
             ),
             onPressed: () async {
               Navigator.of(context, rootNavigator: true).pop("Discard");
@@ -52,13 +47,19 @@ class _RequestPageState extends State<RequestPage> {
                   source: ImageSource.camera, imageQuality: 70);
               File croppedFile = await ImageCropper.cropImage(
                   sourcePath: imageFile.path,
-                  aspectRatioPresets: [CropAspectRatioPreset.square],
+                  aspectRatioPresets: [
+                    CropAspectRatioPreset.square,
+                    CropAspectRatioPreset.ratio3x2,
+                    CropAspectRatioPreset.original,
+                    CropAspectRatioPreset.ratio4x3,
+                    CropAspectRatioPreset.ratio16x9
+                  ],
                   androidUiSettings: AndroidUiSettings(
                       activeControlsWidgetColor: secondaryColor,
                       toolbarTitle: 'Crop',
                       toolbarColor: primaryColor,
                       toolbarWidgetColor: Colors.white,
-                      initAspectRatio: CropAspectRatioPreset.square,
+                      initAspectRatio: CropAspectRatioPreset.original,
                       lockAspectRatio: true),
                   iosUiSettings: IOSUiSettings(
                     minimumAspectRatio: 1.0,
@@ -74,10 +75,7 @@ class _RequestPageState extends State<RequestPage> {
           CupertinoActionSheetAction(
             child: Text(
               "Gallery",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: "MontserratBold"),
+              style: TextStyle(color: Colors.black, fontSize: 16),
             ),
             onPressed: () async {
               Navigator.of(context, rootNavigator: true).pop("Discard");
@@ -85,15 +83,22 @@ class _RequestPageState extends State<RequestPage> {
                   source: ImageSource.gallery, imageQuality: 70);
               File croppedFile = await ImageCropper.cropImage(
                   sourcePath: imageFile.path,
-                  aspectRatioPresets: [CropAspectRatioPreset.square],
+                  aspectRatioPresets: [
+                    CropAspectRatioPreset.square,
+                    CropAspectRatioPreset.ratio3x2,
+                    CropAspectRatioPreset.original,
+                    CropAspectRatioPreset.ratio4x3,
+                    CropAspectRatioPreset.ratio16x9
+                  ],
                   androidUiSettings: AndroidUiSettings(
                       activeControlsWidgetColor: secondaryColor,
                       toolbarTitle: 'Crop',
                       toolbarColor: primaryColor,
                       toolbarWidgetColor: Colors.white,
-                      initAspectRatio: CropAspectRatioPreset.square,
+                      initAspectRatio: CropAspectRatioPreset.original,
                       lockAspectRatio: true),
                   iosUiSettings: IOSUiSettings(minimumAspectRatio: 1.0));
+
               if (croppedFile != null) {
                 setState(() {
                   _image = File(croppedFile.path);
@@ -120,24 +125,29 @@ class _RequestPageState extends State<RequestPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          backgroundColor: greyish,
+          backgroundColor: primaryColor,
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               child: Column(children: [
-                AppBarWidget(title: "Add Your"),
+                AppBarWidget(
+                    title: "Contact Us",
+                    tColor: Colors.white,
+                    bColor: Colors.white),
+                SizedBox(height: 70),
                 Utils.normalTextField("Name", name),
                 SizedBox(height: 20),
-                Utils.normalTextField("Phone Number", phone),
+                Utils.normalTextField("Phone Number", phone,
+                    type: TextInputType.number),
                 SizedBox(height: 20),
-                Utils.normalTextField("Url", url),
+                Utils.normalTextField("Message", msg, line: 3),
                 SizedBox(height: 30),
                 Row(
                   children: [
                     Padding(
                         padding: const EdgeInsets.only(left: 8.0, bottom: 8),
-                        child: Text("Logo",
+                        child: Text("Attachment",
                             style: TextStyle(
                                 color: primaryColor,
                                 fontWeight: FontWeight.bold)))
@@ -168,7 +178,7 @@ class _RequestPageState extends State<RequestPage> {
                                 child: Center(
                                     child: Icon(
                                   Icons.photo,
-                                  color: primaryColor.withOpacity(.7),
+                                  color: Colors.white.withOpacity(.7),
                                   size: 70,
                                 )),
                                 decoration: BoxDecoration(
@@ -182,14 +192,14 @@ class _RequestPageState extends State<RequestPage> {
                 SizedBox(height: 50),
                 GestureDetector(
                     onTap: () async {
-                      // Common.showLoadingDialog(this.context, _keyLoader);
+                      Utils.showLoadingDialog(context);
                       var timeStamp =
                           DateTime.now().millisecondsSinceEpoch.toString();
                       String fileName =
                           DateTime.now().millisecondsSinceEpoch.toString();
                       var reference = FirebaseStorage.instance
                           .ref()
-                          .child("images")
+                          .child("contactus")
                           .child(fileName);
                       UploadTask uploadTask = reference.putFile(_image);
                       TaskSnapshot storageTaskSnapshot = await uploadTask;
@@ -198,135 +208,23 @@ class _RequestPageState extends State<RequestPage> {
                           .then((downloadUrl) {
                         final databaseRef =
                             FirebaseDatabase.instance.reference();
-                        databaseRef.child('featured').child(timeStamp).update({
+                        databaseRef.child('contactUs').child(timeStamp).update({
+                          'uid': FBService.getUser().uid,
                           'name': name.text,
-                          'url': url.text,
-                          'logo': downloadUrl,
+                          'phone': phone.text,
+                          'image': downloadUrl,
+                          'msg': msg.text,
                           'timestanp': timeStamp,
-                          'status': 0
                         });
                       });
-
-                      // Navigator.of(_keyLoader.currentContext, rootNavigator: true)
-                      //     .pop();
-
-                      await showDialog(
-                          barrierDismissible: false,
-                          context: this.context,
-                          builder: (_) {
-                            return AlertDialog(
-                              title: Text(
-                                "Suucess",
-                              ),
-                              content: Text("OK"),
-                              actions: [
-                                TextButton(
-                                    child: Text("Ok"),
-                                    onPressed: () {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop('dialog');
-                                      // Navigator.pushReplacement(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //       builder: (context) => TabbarScreen()),
-                                      // );
-                                    })
-                              ],
-                            );
-                          });
+                      Navigator.of(context).pop();
+                      await Utils.success(context, Nav());
                     },
                     child:
-                        Utils.flatButton("Submit", 150, color: secondaryColor)
-                    //  Container(
-                    //     height: 50,
-                    //     width: 150,
-                    //     decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.all(Radius.circular(10)),
-                    //       color: primaryColor,
-                    //     ),
-                    //     child: Center(
-                    //         child: Text("Submit",
-                    //             style: TextStyle(
-                    //                 color: Colors.white,
-                    //                 fontSize: 17,
-                    //                 fontWeight: FontWeight.w600)))),
-                    )
+                        Utils.flatButton("Submit", 150, color: secondaryColor))
               ]),
             ),
           )),
     );
-
-    //FIXME container design Circle
-
-    // Container(
-    //   margin: EdgeInsets.all(10),
-    //   decoration: BoxDecoration(
-    //       color: Colors.red.withOpacity(.3),
-    //       borderRadius: BorderRadius.all(Radius.circular(20))),
-    //   height: 120,
-    //   width: MediaQuery.of(context).size.width,
-    //   child:
-
-    //   FutureBuilder(
-    //       future: fetch(),
-    //       builder: (context, data) {
-    //         return ListView.builder(
-    //           scrollDirection: Axis.horizontal,
-    //           itemCount: data.data.length,
-    //           shrinkWrap: true,
-    //           itemBuilder: (context, index) {
-    //             var item = data.data[index];
-    //             return Container(
-    //               margin: EdgeInsets.all(10),
-    //               child: GestureDetector(
-    //                 onTap: () {
-    //                   showDialog(
-    //                       context: context,
-    //                       builder: (BuildContext context) {
-    //                         return AlertDialog(
-    //                           shape: RoundedRectangleBorder(
-    //                               borderRadius: BorderRadius.all(
-    //                                   Radius.circular(20.0))),
-    //                           content: Container(
-    //                               width: 180.0,
-    //                               height: 100.0,
-    //                               decoration: BoxDecoration(
-    //                                   color: Colors.white,
-    //                                   shape: BoxShape.rectangle,
-    //                                   borderRadius:
-    //                                       BorderRadius.circular(20)),
-    //                               child: Column(
-    //                                 mainAxisAlignment:
-    //                                     MainAxisAlignment.spaceEvenly,
-    //                                 children: <Widget>[
-    //                                   ElevatedButton(
-    //                                       onPressed: () {
-    //                                         print(item['url']);
-    //                                       },
-    //                                       child: Text("open"))
-    //                                 ],
-    //                               )),
-    //                         );
-    //                       });
-    //                 },
-    //                 child: Column(
-    //                   children: [
-    //                     CircleAvatar(
-    //                       radius: 30.0,
-    //                       backgroundImage: NetworkImage("${item['l']}"),
-    //                       backgroundColor: Colors.transparent,
-    //                     ),
-    //                     SizedBox(height: 10),
-    //                     Text("${item['name']}")
-    //                   ],
-    //                 ),
-    //               ),
-    //             );
-    //           },
-    //         );
-    //       }),
-    // )
-    // ],
-    // ));
   }
 }

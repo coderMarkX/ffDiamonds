@@ -1,8 +1,10 @@
 // @dart=2.9
-import 'package:ffdiamonds/services/firebaseServices.dart';
+import 'package:ffdiamonds/screens/activity/topUp.dart';
+import 'package:ffdiamonds/services/FireBaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
 import 'package:ffdiamonds/utils/globadData.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
@@ -69,7 +71,7 @@ class _WalletState extends State<Wallet> {
     }
     _interstitialAd.fullScreenContentCallback = FullScreenContentCallback(
       onAdShowedFullScreenContent: (InterstitialAd ad) => {
-        FirebaseService.updateData('user', FirebaseService.getUser(), {
+        FBService.updateData('user', FBService.getUser().uid, {
           'coin': coin + custom['interAd'],
         })
       },
@@ -130,7 +132,7 @@ class _WalletState extends State<Wallet> {
     );
     _rewardedAd.setImmersiveMode(true);
     _rewardedAd.show(onUserEarnedReward: (RewardedAd ad, RewardItem reward) {
-      FirebaseService.updateData('user', FirebaseService.getUser(), {
+      FBService.updateData('user', FBService.getUser().uid, {
         'coin': coin + custom['rewardAd'],
       });
     });
@@ -149,79 +151,90 @@ class _WalletState extends State<Wallet> {
     return Scaffold(
       backgroundColor: secondaryColor,
       extendBody: true,
-      body: Column(
-        children: [
-          Padding(
-              padding: EdgeInsets.all(10.0),
-              child: StreamBuilder(
-                  stream: FirebaseService.getDataStream(
-                      'user', FirebaseService.getUser()),
-                  builder: (context, snap) {
-                    var data = snap.data.snapshot.value;
-                    coin = !snap.hasData ? 0 : data['coin'];
-                    return !snap.hasData
-                        ? Utils.loading()
-                        : Container(
-                            height: 200,
-                            width: Utils.mediaQ(context).width,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              color: primaryColor,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text("Available",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      // fontFamily: 'HillHouse'
-                                    )),
-                                SizedBox(height: 10),
-                                Text(data['coin'].toString(),
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      // fontFamily: 'HillHouse'
-                                    )),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(right: 10),
-                                      height: 50,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                        color: secondaryColor,
+      body: SingleChildScrollView(
+        // physics: BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            Padding(
+                padding: EdgeInsets.all(10.0),
+                child: StreamBuilder(
+                    stream: FBService.getDataStream(
+                        'user', FBService.getUser().uid),
+                    builder: (context, snap) {
+                      var data = snap?.data?.snapshot?.value ?? [];
+                      coin = !snap.hasData ? 0 : data['coin'];
+                      return !snap.hasData
+                          ? Utils.loading()
+                          : Container(
+                              height: 200,
+                              width: Utils.mediaQ(context).width,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                color: primaryColor,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text("Available",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 30,
+                                        // fontFamily: 'HillHouse'
+                                      )),
+                                  SizedBox(height: 10),
+                                  Text(data['coin'].toString(),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 30,
+                                        // fontFamily: 'HillHouse'
+                                      )),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      TopUp()));
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(right: 10),
+                                          height: 50,
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                            color: secondaryColor,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Text("Top Up",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600)),
+                                              Icon(Icons.chevron_right_outlined,
+                                                  color: Colors.white)
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Text("Top Up",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w600)),
-                                          Icon(Icons.chevron_right_outlined,
-                                              color: Colors.white)
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          );
-                  })),
-          SizedBox(height: 5),
-          Expanded(
-            child: Container(
-              height: 300.0,
+                                    ],
+                                  )
+                                ],
+                              ),
+                            );
+                    })),
+            SizedBox(height: 5),
+            Container(
+              height: 500.0,
               color: secondaryColor,
               child: Container(
                 decoration: BoxDecoration(
@@ -439,8 +452,8 @@ class _WalletState extends State<Wallet> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

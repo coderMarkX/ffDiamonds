@@ -1,13 +1,14 @@
 // @dart=2.9
 import 'dart:io';
-
 import 'package:ffdiamonds/screens/home.dart';
 import 'package:ffdiamonds/screens/profile.dart';
 import 'package:ffdiamonds/screens/wallet.dart';
 import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
+import 'package:ffdiamonds/utils/globadData.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 
 class Nav extends StatefulWidget {
   @override
@@ -17,6 +18,26 @@ class Nav extends StatefulWidget {
 class _NavState extends State<Nav> {
   List<Widget> pages = <Widget>[Home(), Wallet(), Profile()];
   int _index = 0;
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: '1.0.0',
+    buildNumber: 'Unknown',
+  );
+
+  Future<void> _initPackageInfo() async {
+    final PackageInfo info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+  }
+
   Future<bool> _onExit() {
     return showDialog(
             context: context,
@@ -122,6 +143,13 @@ class _NavState extends State<Nav> {
 
   @override
   Widget build(BuildContext context) {
+    // if (custom != null &&
+    //     int.parse(custom['isUpdate'].replaceAll(".", "")) >
+    //         int.parse(_packageInfo.version.replaceAll(".", "")))
+    //   WidgetsBinding.instance.addPostFrameCallback((_) async {
+    //     await updatePopup(context);
+    //   });
+
     return WillPopScope(
       onWillPop: _onExit,
       child: SafeArea(
@@ -146,5 +174,65 @@ class _NavState extends State<Nav> {
         ),
       ),
     );
+  }
+
+  updatePopup(context) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
+              backgroundColor: Colors.white,
+              content: Container(
+                  width: 220.0,
+                  height: 300.0,
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text("asdasddas sdfsdfdf ?",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w700)),
+                      ),
+                      SizedBox(height: 20),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text("update",
+                            style: TextStyle(
+                                fontSize: 17, color: Colors.grey[800])),
+                      ),
+                      SizedBox(height: 20),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text("""
+asdasdfjasbfhasbfhb
+asdasdasf
+sdgagsdfgadhadhdh
+"""),
+                      ),
+                      SizedBox(height: 20),
+                      Container(
+                          alignment: Alignment.bottomRight,
+                          child: Utils.flatButton("Update", 80,
+                              color: Colors.green[800], radius: 5, height: 35)),
+                      SizedBox(height: 10),
+                      Divider(thickness: 1.5),
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Container(
+                              width: 150,
+                              child: Image.asset('assets/image/play.png')),
+                        ],
+                      )
+                    ],
+                  )),
+            ),
+          );
+        });
   }
 }

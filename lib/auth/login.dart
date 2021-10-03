@@ -41,9 +41,7 @@ class _LoginState extends State<Login> {
               });
     } catch (e) {
       Navigator.of(context, rootNavigator: true).pop();
-      Utils.snackbar(
-          context, e.toString().replaceRange(0, 14, '').split(']')[1],
-          icon: Icons.error_outline_outlined);
+      Utils.showToast(e.toString().replaceRange(0, 14, '').split(']')[1]);
     }
   }
 

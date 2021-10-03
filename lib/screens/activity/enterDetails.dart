@@ -1,8 +1,7 @@
 // @dart=2.9
 import 'dart:convert';
-
 import 'package:ffdiamonds/screens/navigation.dart';
-import 'package:ffdiamonds/services/firebaseServices.dart';
+import 'package:ffdiamonds/services/FireBaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
 import 'package:ffdiamonds/utils/globadData.dart';
@@ -10,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:http/http.dart' as http;
 
 class EnterDetails extends StatefulWidget {
@@ -90,96 +90,116 @@ class _EnterDetailsState extends State<EnterDetails> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Container(height: Utils.mediaQ(context).height / 4),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10, right: 10),
+                    width: 70,
+                    height: 30,
+                    decoration: BoxDecoration(
+                        color: secondaryColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Center(
+                        child: Text("SKIP",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold))),
+                  ),
+                ),
+                Container(height: Utils.mediaQ(context).height / 2),
                 Utils.normalTextField("Code", code),
+                SizedBox(height: 50),
                 GestureDetector(
                     onTap: () async {
-                      final FirebaseDatabase db = FirebaseDatabase.instance;
+                      final FirebaseAuth _auth = FirebaseAuth.instance;
                       try {
-                        await db
-                            .reference()
-                            .child("code")
-                            .child(code.text)
-                            .once()
-                            .then((DataSnapshot dataSnapshot) async {
-                          if (dataSnapshot.value != null) {
-                            //limiting
-                            if (dataSnapshot.value['used'] < 10) {
-                              //getting first user data
-                              var odata;
-                              await db
-                                  .reference()
-                                  .child("user")
-                                  .child(dataSnapshot.value['uid'])
-                                  .once()
-                                  .then((DataSnapshot dataSnapshot) {
-                                odata = dataSnapshot.value;
-                              });
-                              //updating first user data
-                              FirebaseService.updateData(
-                                  'user', dataSnapshot.value['uid'], {
-                                'coin': odata['coin'] + custom['onRefer'],
-                              });
-                              //updating used of FUser
-                              db
-                                  .reference()
-                                  .child("code")
-                                  .child(code.text)
-                                  .update({
-                                'used': dataSnapshot.value['used'] + 1,
-                              });
+                        final censuredEmail = FBService.getUser()
+                            .email
+                            .replaceAll(
+                                new RegExp('(?<=.)[^@](?=[^@]*?[^@]@)'), '*');
 
-                              //updating this user data 100 Coin
-                              FirebaseService.updateData(
-                                  'user', FirebaseService.getUser(), {
-                                'coin': custom['onRefRec'],
-                              });
+                        print(censuredEmail);
 
-                              //Noti
-                              final response = await http.post(
-                                Uri.parse(
-                                    'https://fcm.googleapis.com/fcm/send'),
-                                headers: {
-                                  'contentTypeHeader': 'application/json',
-                                  'authorizationHeader': "key=$serverKey"
-                                },
-                                body: jsonEncode({
-                                  "to": "asd",
-                                  "priority": "high",
-                                  "data": {
-                                    "type": "100",
-                                    "user_id": 'data userId',
-                                    "title": 'data title',
-                                    "message": 'data msg',
-                                    "time":
-                                        DateTime.now().millisecondsSinceEpoch,
-                                    "sound": "default",
-                                    "vibrate": "300",
-                                  },
-                                  "notification": {
-                                    "vibrate": "300",
-                                    "priority": "high",
-                                    "body": 'noti Body',
-                                    "title": 'noti title',
-                                    "sound": "default"
-                                  }
-                                }),
-                              );
+                        // await db
+                        //     .reference()
+                        //     .child("code")
+                        //     .child(code.text)
+                        //     .once()
+                        //     .then((DataSnapshot dataSnapshot) async {
+                        //   if (dataSnapshot.value != null) {
+                        //     //limiting
+                        //     if (dataSnapshot.value['used'] ?? 0 < 10) {
+                        //       //getting first user data
+                        //       var odata;
+                        //       await db
+                        //           .reference()
+                        //           .child("user")
+                        //           .child(dataSnapshot.value['uid'])
+                        //           .once()
+                        //           .then((DataSnapshot dataSnapshot) {
+                        //         odata = dataSnapshot.value;
+                        //       });
+                        //       //updating first user data
+                        //       FBService.updateData(
+                        //           'user', dataSnapshot.value['uid'], {
+                        //         'coin': odata['coin'] + custom['onRefer'],
+                        //       });
+                        //       //updating used of FUser
+                        //       db
+                        //           .reference()
+                        //           .child("code")
+                        //           .child(code.text)
+                        //           .update({
+                        //         'used': dataSnapshot.value['used'] ?? 0 + 1,
+                        //       });
 
-                              print(response);
-                            } else {
-                              print("used all");
-                            }
-                          } else {
-                            print('not found');
-                          }
-                        });
+                        //       //updating this user data 100 Coin
+                        //       FBService.updateData(
+                        //           'user', FBService.getUser().uid, {
+                        //         'coin': custom['onRefRec'],
+                        //       });
+
+                        //       // //Noti
+                        //       await http.post(
+                        //         Uri.parse(
+                        //             'https://fcm.googleapis.com/fcm/send'),
+                        //         headers: {
+                        //           'Content-Type': 'application/json',
+                        //           'authorization': "key=$serverKey"
+                        //         },
+                        //         body: jsonEncode({
+                        //           "to":
+                        //               "d7VBl41pTce5GAbFD2CN-9:APA91bFuN09mwi-iukGcbJIWQFKOyuFEIjPG7MYBlsoWy5phVoe6j1KloNLIBUXaU7kMiq6xCTQvhrRQqAK1LylXVMLo1C-ul9vCnhkig_NMUM2nID0PJaKwLirGWwUYWOP3Ws6jH49b",
+                        //           "priority": "high",
+                        //           "notification": {
+                        //             "vibrate": "300",
+                        //             "priority": "high",
+                        //             "body": 'Congrats someone used your code ',
+                        //             "title": 'noti title',
+                        //             "sound": "default"
+                        //           }
+                        //         }),
+                        //       );
+
+                        // // await Navigator.pushAndRemoveUntil(
+                        // //     context,
+                        // //     CupertinoPageRoute(
+                        // //         builder: (context) => Nav()),
+                        // //     (route) => false);
+                        //     } else {
+                        //       print("used all");
+                        //     }
+                        //   } else {
+                        //     print('not found');
+                        //   }
+                        // });
                       } catch (e) {
                         print(e);
                       }
                     },
                     child: Utils.flatButton(
-                        "EnterDetails", MediaQuery.of(context).size.width,
+                        "Submit", MediaQuery.of(context).size.width,
                         color: secondaryColor)),
                 SizedBox(height: 20),
               ],

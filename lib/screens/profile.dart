@@ -1,10 +1,12 @@
 // @dart=2.9
 import 'package:ffdiamonds/auth/welcome.dart';
-import 'package:ffdiamonds/services/firebaseServices.dart';
+import 'package:ffdiamonds/screens/activity/conatctUs.dart';
+import 'package:ffdiamonds/services/FireBaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -67,7 +69,7 @@ class _ProfileState extends State<Profile> {
                               ),
                               InkWell(
                                 onTap: () async {
-                                  await FirebaseService.logout();
+                                  await FBService.logout();
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       CupertinoPageRoute(
@@ -261,21 +263,7 @@ class _ProfileState extends State<Profile> {
                             //       fontSize: 12.0,
                             //     )),
                             SizedBox(height: 10),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.center,
-                            //   crossAxisAlignment:
-                            //       CrossAxisAlignment.center,
-                            //   children: [
-                            //     // Icon(Icons.person_outline,
-                            //     //     color: Colors.white, size: 18),
-                            //     Text(
-                            //         "@" + "${userData['username']}" ?? "",
-                            //         style: TextStyle(
-                            //           color: whiteColor,
-                            //           fontSize: 15.0,
-                            //         )),
-                            //   ],
-                            // ),
+                      
                           ],
                         ),
                       ],
@@ -287,136 +275,176 @@ class _ProfileState extends State<Profile> {
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                 child: Column(
                   children: [
+                    Utils.iosRoute(
+                        context,
+                        ContactUs(),
+                        Utils.optionTile(context,
+                            Icons.contact_support_outlined, "Contact Us")),
+
                     GestureDetector(
-                      onTap: () async {
-                        sure();
-                      },
-                      child: Utils.optionTile(
-                          context, Icons.business_center_outlined, "Logout"),
-                    ),
+                        onTap: () async {
+                          sure();
+                        },
+                        child: Utils.optionTile(
+                            context, Icons.exit_to_app_rounded, "Logout")),
 
-                    // Utils.optionTile(
-                    //     context,
-                    //     MyTransaction(),
-                    //     Icons.receipt_long_outlined,
-                    //     AppLocalizations.of(context)
-                    //         .translate('myTransactions')),
-                    // Utils.optionTile(
-                    //     context,
-                    //     CompanyProfile(),
-                    //     Icons.business,
-                    //     AppLocalizations.of(context)
-                    //         .translate('myCompanyProfile')),
-
-                    // Utils.optionTile(
-                    //     context,
-                    //     MyResumes(),
-                    //     Icons.description_outlined,
-                    //     AppLocalizations.of(context).translate('resumes')),
-
-                    // Utils.optionTile(
-                    //     context,
-                    //     InterestedFields(),
-                    //     Icons.notifications_outlined,
-                    //     AppLocalizations.of(context)
-                    //         .translate('interestedFields')),
-
-                    // Utils.optionTile(
-                    //     context, EditSkills(), Icons.stars_outlined, "Skills"),
-
-                    // Utils.optionTile(context, Experience(), Icons.work_outline,
-                    //     AppLocalizations.of(context).translate('experience')),
-
-                    // Utils.optionTile(
-                    //     context,
-                    //     Education(),
-                    //     Icons.school_outlined,
-                    //     AppLocalizations.of(context).translate('education')),
-
-                    // Utils.optionTile(
-                    //     context,
-                    //     LikedJobs(),
-                    //     Icons.favorite_border,
-                    //     AppLocalizations.of(context).translate('favJobs')),
-
-                    // Utils.optionTile(
-                    //     context,
-                    //     ContactUs(),
-                    //     Icons.contact_support_outlined,
-                    //     AppLocalizations.of(context).translate('contactUs')),
-
-                    // Utils.optionTile(
-                    //     context,
-                    //     ChangeLanguage(),
-                    //     Icons.translate_outlined,
-                    //     AppLocalizations.of(context).translate('changeLang')),
-                    // Utils.optionTile(
-                    //     context,
-                    //     Help(),
-                    //     Icons.help_outline,
-                    //     AppLocalizations.of(context).translate('help')),
-
-                    // pass
-                    //     ? Container()
-                    //     : Utils.optionTile(
-                    //         context,
-                    //         SetPassSeeker(
-                    //             title: AppLocalizations.of(context)
-                    //                 .translate('setPass')),
-                    //         Icons.lock_outlined,
-                    //         AppLocalizations.of(context).translate('setPass')),
-
-                    // Utils.optionTile(
-                    //     context,
-                    //     f.Feedback(),
-                    //     Icons.feedback_outlined,
-                    //     AppLocalizations.of(context).translate('feedback')),
-
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(vertical: 7),
-                    //   child: ClayContainer(
-                    //     color: scafBg,
-                    //     depth: 30,
-                    //     spread: 7,
-                    //     borderRadius: 15,
-                    //     child: ListTile(
-                    //         onTap: () {
-                    //           launch(
-                    //               "https://play.google.com/store/apps/details?id=com.klick.solvewins");
-                    //         },
-                    //         title: Text("Rate Us"),
-                    //         leading: Icon(Icons.thumb_up_outlined,
-                    //             color: primaryColor.withOpacity(.7)),
-                    //         trailing: Icon(Icons.arrow_forward_ios, size: 20)),
-                    //   ),
-                    // ),
-
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(vertical: 7),
-                    //   child: ClayContainer(
-                    //     color: scafBg,
-                    //     depth: 30,
-                    //     spread: 7,
-                    //     borderRadius: 15,
-                    //     child: ListTile(
-                    //         onTap: () {
-                    //           sure();
-                    //         },
-                    //         title: Text("Logout"),
-                    //         leading: Icon(Icons.logout,
-                    //             color: primaryColor.withOpacity(.7)),
-                    //         trailing: Icon(Icons.arrow_forward_ios, size: 20)),
-                    //   ),
-                    // )
+              
                   ],
                 ),
               ),
+myApps()
+
+
+
             ],
           ),
         ),
       ),
     ));
   }
+
+  
+  getData() async {
+    List featured = [];
+    var a = await FBService.getData('otherApps');
+    var aa = a.value;
+    var k = aa.keys.toList();
+    for (var i in k) {
+      if (aa[i].containsValue(1)) {
+        featured.add(aa[i]);
+        featured.toSet().toList();
+      }
+    }
+    return featured;
+  }
+
+
+  Widget myApps() {
+    return FutureBuilder(
+        future: getData(),
+        builder: (context, snap) {
+          
+          return (!snap.hasData && snap.data.length > 0) ? Container() : Container(
+      decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15), topRight: Radius.circular(15))),
+      child: GridView.builder(
+        physics: BouncingScrollPhysics(),
+        shrinkWrap: true,
+        gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: MediaQuery.of(context).size.width /
+                (MediaQuery.of(context).size.height / 1.7)),
+        itemCount: snap.data.length,
+        itemBuilder: (context, index) {
+          var item = snap.data[index];
+          List allSS = item['img'];
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: GestureDetector(
+                onTap: () {
+                  showModalBottomSheet<void>(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.only(
+                            topLeft: const Radius.circular(30.0),
+                            topRight: const Radius.circular(30.0))),
+                    context: context,
+                    builder: (BuildContext context) {
+                      return StatefulBuilder(builder:
+                          (BuildContext context, StateSetter setState) {
+                        return ListView(
+                          physics: BouncingScrollPhysics(),
+                          children: [
+                            SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(width: 20),
+                                Container(
+                                    height: 100,
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: Image.network(item['l']))),
+                                SizedBox(width: 20),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(item['name'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 20)),
+                                    SizedBox(height: 10),
+                                    Container(
+                                        alignment: Alignment.bottomRight,
+                                        child: Utils.flatButton("Download", 100,
+                                            color: Colors.green[800],
+                                            radius: 5,
+                                            height: 35)),
+                                  ],
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                            Container(
+                              height: 200,
+                              child: ListView.builder(
+                                  physics: BouncingScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: allSS.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index2) {
+                                    var ss = allSS[index2];
+                                    return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            child: Image.network(ss)));
+                                  }),
+                            ),
+                            Container(
+                                padding: EdgeInsets.only(left: 5, top: 5),
+                                alignment: Alignment.topLeft,
+                                child: Text('Description',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500))),
+                            Container(
+                                padding: EdgeInsets.only(left: 5, top: 10),
+                                alignment: Alignment.topLeft,
+                                child: Text(item['desc'],
+                                    style: TextStyle(
+                                        color: Colors.grey[700],
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w400)))
+                          ],
+                        );
+                      });
+                    },
+                  );
+                },
+                child: Column(
+                  children: [
+                    Container(
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.network(item['l']))),
+                    Text(item['name'],
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 20))
+                  ],
+                )),
+          );
+        },
+      ),
+    );
+        }
+    );
+        
+  }
+
 }
 
 

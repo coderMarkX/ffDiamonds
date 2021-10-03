@@ -1,6 +1,8 @@
 // @dart=2.9
+import 'package:device_info/device_info.dart';
 import 'package:ffdiamonds/screens/activity/enterDetails.dart';
-import 'package:ffdiamonds/services/firebaseServices.dart';
+import 'package:ffdiamonds/screens/navigation.dart';
+import 'package:ffdiamonds/services/FireBaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
 import 'package:ffdiamonds/utils/globadData.dart';
@@ -22,41 +24,53 @@ class _SignupState extends State<Signup> {
   final GlobalKey<State> keyLoader = GlobalKey<State>();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
   Future<void> _register() async {
     Utils.showLoadingDialog(this.context);
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    DataSnapshot deviceD = await FBService.getData('deviceId');
+    List devices = deviceD?.value?.keys?.toList() ?? [];
     try {
       User user = (await _auth.createUserWithEmailAndPassword(
               email: _email.text, password: _password.text))
           .user;
       if (user != null) {
         final FirebaseDatabase db = FirebaseDatabase.instance;
-
-        FirebaseService.updateData('user', FirebaseService.getUser(), {
+        FBService.updateData('user', FBService.getUser().uid, {
           'uid': _auth.currentUser.uid,
           'email': _email.text,
           'password': _password.text,
           'coin': custom['onRegister'],
           'fcm': fcm
         });
-
-        var refCode = _email.text.substring(0, _email.text.indexOf('@'));
+        await FBService.updateData(
+            'deviceId', androidInfo.androidId, {'uid': _auth.currentUser.uid});
+        var refCode =
+            _auth.currentUser.uid.substring(_auth.currentUser.uid.length - 5);
         db
             .reference()
             .child("code")
             .child(refCode)
             .update({'uid': _auth.currentUser.uid, 'code': refCode});
         Navigator.of(context, rootNavigator: true).pop();
-        await Navigator.pushAndRemoveUntil(
-            context,
-            CupertinoPageRoute(builder: (context) => EnterDetails()),
-            (route) => false);
+        if (devices.contains(androidInfo.androidId)) {
+          Utils.showToast("This device is already registered",
+              color: Colors.red);
+          await Navigator.pushAndRemoveUntil(
+              context,
+              CupertinoPageRoute(builder: (context) => Nav()),
+              (route) => false);
+        } else {
+          await Navigator.pushAndRemoveUntil(
+              context,
+              CupertinoPageRoute(builder: (context) => EnterDetails()),
+              (route) => false);
+        }
       }
     } catch (e) {
       Navigator.of(context, rootNavigator: true).pop();
-      Utils.snackbar(
-          context, e.toString().replaceRange(0, 14, '').split(']')[1],
-          icon: Icons.error_outline_outlined);
+      Utils.showToast(e.toString().replaceRange(0, 14, '').split(']')[1]);
     }
   }
 
@@ -65,12 +79,6 @@ class _SignupState extends State<Signup> {
       _obscureText = !_obscureText;
     });
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   setFcm();
-  // }
 
   @override
   Widget build(BuildContext context) {

@@ -72,21 +72,25 @@ class Utils {
   static Widget normalTextField(String title, TextEditingController controller,
       {bool enabled = true,
       TextInputType type = TextInputType.text,
-      int line = 1}) {
+      int line = 1,
+      cColor: primaryColor,
+      tColor: Colors.white}) {
     return TextField(
         cursorColor: secondaryColor,
         style: TextStyle(color: Colors.white),
         controller: controller,
+        maxLines: line,
+        enabled: enabled,
+        keyboardType: type,
         decoration: InputDecoration(
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primaryColor, width: 1.5),
-            ),
+                borderSide: BorderSide(color: cColor, width: 1.5)),
             filled: true,
-            fillColor: Colors.white.withOpacity(.3),
+            fillColor: tColor.withOpacity(.3),
             labelText: title,
-            labelStyle: TextStyle(color: Colors.white),
+            labelStyle: TextStyle(color: tColor),
             border: OutlineInputBorder(
-                borderSide: BorderSide(color: primaryColor, width: 1.5))));
+                borderSide: BorderSide(color: cColor, width: 1.5))));
   }
 
   static Widget optionTile(BuildContext context, var icon, String title) {
@@ -97,9 +101,12 @@ class Utils {
             color: secondaryColor.withOpacity(.2),
             borderRadius: BorderRadius.all(Radius.circular(15))),
         child: ListTile(
-            title: Text(title),
-            leading: Icon(icon, color: primaryColor.withOpacity(.7)),
-            trailing: Icon(Icons.arrow_forward_ios, size: 20)),
+            title: Text(title,
+                style: TextStyle(
+                    color: primaryColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600)),
+            leading: Icon(icon, color: primaryColor.withOpacity(.8), size: 35)),
       ),
     );
   }
@@ -347,16 +354,21 @@ class AppBarWidget extends StatelessWidget {
     this.goto,
     this.isGoto = false,
     Key key,
+    this.tColor = Colors.black,
+    this.bColor = primaryColor,
   }) : super(key: key);
   final bool isBackButton;
   final String title;
   final List<Widget> actions;
   final bool isGoto;
   final Widget goto;
+  final Color tColor;
+  final Color bColor;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.symmetric(vertical: 14.0),
       decoration: isBackButton
           ? null
           : BoxDecoration(
@@ -386,16 +398,13 @@ class AppBarWidget extends StatelessWidget {
                             width: 45,
                             height: 45,
                             decoration: BoxDecoration(
-                              color: primaryColor.withOpacity(.3),
+                              color: bColor.withOpacity(.3),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(15),
                               ),
                             ),
-                            child: Icon(
-                              Icons.keyboard_arrow_left,
-                              color: primaryColor,
-                              size: 28,
-                            )),
+                            child: Icon(Icons.keyboard_arrow_left,
+                                color: bColor, size: 28)),
                       ),
                 title == null
                     ? Container()
@@ -405,7 +414,7 @@ class AppBarWidget extends StatelessWidget {
                           child: Text(
                             title,
                             style: TextStyle(
-                              color: Colors.black,
+                              color: tColor,
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
                             ),

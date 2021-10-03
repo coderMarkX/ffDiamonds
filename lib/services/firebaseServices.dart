@@ -2,11 +2,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class FirebaseService {
+class FBService {
   static final db = FirebaseDatabase.instance;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
-  static getUser() {
-    return _auth.currentUser.uid;
+  static final currUser = _auth.currentUser;
+  static final serverTime = ServerValue.timestamp;
+
+  static User getUser() {
+    return _auth.currentUser;
   }
 
   static getData(String key) {
@@ -19,6 +22,10 @@ class FirebaseService {
 
   static updateData(String key, String key2, var data) {
     return db.reference().child(key).child(key2).update(data);
+  }
+
+  static updateData2(String key, String key2, String key3, var data) {
+    return db.reference().child(key).child(key2).child(key).update(data);
   }
 
   static getDataStream(String key, String key2) {

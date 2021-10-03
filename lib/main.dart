@@ -3,7 +3,7 @@
 import 'package:ffdiamonds/auth/intro.dart';
 import 'package:ffdiamonds/auth/welcome.dart';
 import 'package:ffdiamonds/screens/navigation.dart';
-import 'package:ffdiamonds/services/firebaseServices.dart';
+import 'package:ffdiamonds/services/FireBaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
 import 'package:ffdiamonds/utils/globadData.dart';
@@ -78,6 +78,7 @@ class _MyAppState extends State<MyApp> {
     await messaging.getToken().then((value) {
       fcm = value;
     });
+    setState(() {});
   }
 
   @override
@@ -111,11 +112,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (custom != null && custom['isUpdate'])
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await updatePopup(context);
-      });
-
     return MaterialApp(
         theme: ThemeData(
             fontFamily: 'JosefinSans',
@@ -128,65 +124,5 @@ class _MyAppState extends State<MyApp> {
             : intro
                 ? Intro()
                 : Welcome());
-  }
-
-  updatePopup(context) {
-    return showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return WillPopScope(
-            onWillPop: () async => false,
-            child: AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              backgroundColor: Colors.white,
-              content: Container(
-                  width: 220.0,
-                  height: 300.0,
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text("asdasddas sdfsdfdf ?",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w700)),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text("update",
-                            style: TextStyle(
-                                fontSize: 17, color: Colors.grey[800])),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text("""
-asdasdfjasbfhasbfhb
-asdasdasf
-sdgagsdfgadhadhdh
-"""),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                          alignment: Alignment.bottomRight,
-                          child: Utils.flatButton("Update", 80,
-                              color: Colors.green[800], radius: 5, height: 35)),
-                      SizedBox(height: 10),
-                      Divider(thickness: 1.5),
-                      SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Container(
-                              width: 150,
-                              child: Image.asset('assets/image/play.png')),
-                        ],
-                      )
-                    ],
-                  )),
-            ),
-          );
-        });
   }
 }
