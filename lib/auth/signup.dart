@@ -37,36 +37,38 @@ class _SignupState extends State<Signup> {
           .user;
       if (user != null) {
         final FirebaseDatabase db = FirebaseDatabase.instance;
+
+        var refCode =
+            _auth.currentUser.uid.substring(_auth.currentUser.uid.length - 5);
         FBService.updateData('user', FBService.getUser().uid, {
           'uid': _auth.currentUser.uid,
           'email': _email.text,
           'password': _password.text,
           'coin': custom['onRegister'],
-          'fcm': fcm
+          'fcm': fcm,
+          'code': refCode
         });
         await FBService.updateData(
             'deviceId', androidInfo.androidId, {'uid': _auth.currentUser.uid});
-        var refCode =
-            _auth.currentUser.uid.substring(_auth.currentUser.uid.length - 5);
         db
             .reference()
             .child("code")
             .child(refCode)
             .update({'uid': _auth.currentUser.uid, 'code': refCode});
         Navigator.of(context, rootNavigator: true).pop();
-        if (devices.contains(androidInfo.androidId)) {
-          Utils.showToast("This device is already registered",
-              color: Colors.red);
-          await Navigator.pushAndRemoveUntil(
-              context,
-              CupertinoPageRoute(builder: (context) => Nav()),
-              (route) => false);
-        } else {
+        // if (devices.contains(androidInfo.androidId)) {
+        //   Utils.showToast("This device is already registered",
+        //       color: Colors.red);
+        //   await Navigator.pushAndRemoveUntil(
+        //       context,
+        //       CupertinoPageRoute(builder: (context) => Nav()),
+        //       (route) => false);
+        // } else {
           await Navigator.pushAndRemoveUntil(
               context,
               CupertinoPageRoute(builder: (context) => EnterDetails()),
               (route) => false);
-        }
+        // }
       }
     } catch (e) {
       Navigator.of(context, rootNavigator: true).pop();
@@ -95,7 +97,18 @@ class _SignupState extends State<Signup> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Container(height: Utils.mediaQ(context).height / 2),
+                SizedBox(height: 50),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: Image.asset('assets/image/signup.jpg', height: 200)),
+                SizedBox(height: 50),
+                Text("Signup",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'HillHouse',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 35)),
+                Container(height: Utils.mediaQ(context).height / 10),
                 Utils.normalTextField("Email Address", _email),
                 SizedBox(height: 20),
                 TextField(

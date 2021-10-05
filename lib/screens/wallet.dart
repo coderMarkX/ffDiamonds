@@ -161,8 +161,10 @@ class _WalletState extends State<Wallet> {
                     stream: FBService.getDataStream(
                         'user', FBService.getUser().uid),
                     builder: (context, snap) {
+                      print(">>>>>>>>>>");
+                      print(custom);
                       var data = snap?.data?.snapshot?.value ?? [];
-                      coin = !snap.hasData ? 0 : data['coin'];
+                      coin = data['coin'] ?? 0;
                       return !snap.hasData
                           ? Utils.loading()
                           : Container(
@@ -187,8 +189,8 @@ class _WalletState extends State<Wallet> {
                                   Text(data['coin'].toString(),
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 30,
-                                        // fontFamily: 'HillHouse'
+                                        fontSize: 35,
+                                        // fontFamily: 'JusticeLeague'
                                       )),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
@@ -278,7 +280,7 @@ class _WalletState extends State<Wallet> {
                               tileColor: primaryColor,
                               trailing: Utils.flatButton("Earn", 80,
                                   height: 35, radius: 10),
-                              title: Text("Earn 10",
+                              title: Text("Earn ${custom['interAd']}",
                                   style: TextStyle(
                                       color: primaryColor,
                                       fontSize: 15,
@@ -318,7 +320,7 @@ class _WalletState extends State<Wallet> {
                               tileColor: primaryColor,
                               trailing: Utils.flatButton("Earn", 80,
                                   height: 35, radius: 10),
-                              title: Text("Earn 100",
+                              title: Text("Earn ${custom['rewardAd']}",
                                   style: TextStyle(
                                       color: primaryColor,
                                       fontSize: 15,
@@ -371,7 +373,8 @@ class _WalletState extends State<Wallet> {
                                                 enabled: false,
                                                 controller:
                                                     TextEditingController()
-                                                      ..text = userData['code'],
+                                                      ..text = userData['code']
+                                                          .toString(),
                                                 decoration: InputDecoration(
                                                     border: OutlineInputBorder(
                                                         borderSide: BorderSide(
@@ -385,7 +388,8 @@ class _WalletState extends State<Wallet> {
                                                 onPressed: () {
                                                   Clipboard.setData(
                                                       ClipboardData(
-                                                          text: 'test'));
+                                                          text: userData['code']
+                                                              .toString()));
                                                   Utils.showToast(
                                                       "Copied Successfully");
                                                 },
@@ -437,7 +441,7 @@ class _WalletState extends State<Wallet> {
                               tileColor: primaryColor,
                               trailing: Utils.flatButton("Refer", 80,
                                   height: 35, radius: 10),
-                              title: Text("Earn 1000",
+                              title: Text("Earn ${custom['onRefer']}",
                                   style: TextStyle(
                                       color: primaryColor,
                                       fontSize: 15,

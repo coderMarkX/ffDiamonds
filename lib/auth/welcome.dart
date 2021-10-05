@@ -110,20 +110,22 @@ class Welcome extends StatelessWidget {
             padding: const EdgeInsets.all(10.0),
             child: Column(
               children: [
-                Container(height: Utils.mediaQ(context).height / 1.5),
+                Container(height: Utils.mediaQ(context).height / 6),
+                Image.asset('assets/image/logo.png', height: 250),
+                Container(height: Utils.mediaQ(context).height / 6),
+                Utils.iosRoute(
+                  context,
+                  Login(),
+                  Utils.flatButton("Login", MediaQuery.of(context).size.width,
+                      color: secondaryColor),
+                ),
+                SizedBox(height: 30),
                 Utils.iosRoute(
                   context,
                   Signup(),
                   Utils.flatButton("Signup", MediaQuery.of(context).size.width,
                       color: secondaryColor),
                 ),
-                SizedBox(height: 30),
-                Utils.iosRoute(
-                  context,
-                  Login(),
-                  Utils.flatButton("Login", MediaQuery.of(context).size.width,
-                      color: secondaryColor),
-                )
               ],
             ),
           ),

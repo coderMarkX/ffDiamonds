@@ -55,11 +55,23 @@ class _LoginState extends State<Login> {
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(10),
+            physics: BouncingScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Container(height: Utils.mediaQ(context).height / 2),
+                SizedBox(height: 50),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: Image.asset('assets/image/login.jpg', height: 200)),
+                SizedBox(height: 50),
+                Text("Login",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'HillHouse',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 35)),
+                Container(height: Utils.mediaQ(context).height / 10),
                 Utils.normalTextField("Email Address", _email),
                 SizedBox(height: 20),
                 TextField(

@@ -33,7 +33,7 @@ class _RequestPageState extends State<RequestPage> {
     ).then<void>((T value) {});
   }
 
-  openDeleteDialog(BuildContext context) {
+  openImageDialog(BuildContext context) {
     containerForSheet<String>(
       context: context,
       child: CupertinoActionSheet(
@@ -41,10 +41,7 @@ class _RequestPageState extends State<RequestPage> {
           CupertinoActionSheetAction(
             child: Text(
               "Camera",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: "MontserratBold"),
+              style: TextStyle(color: Colors.black, fontSize: 16),
             ),
             onPressed: () async {
               Navigator.of(context, rootNavigator: true).pop("Discard");
@@ -74,10 +71,7 @@ class _RequestPageState extends State<RequestPage> {
           CupertinoActionSheetAction(
             child: Text(
               "Gallery",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: "MontserratBold"),
+              style: TextStyle(color: Colors.black, fontSize: 16),
             ),
             onPressed: () async {
               Navigator.of(context, rootNavigator: true).pop("Discard");
@@ -147,7 +141,7 @@ class _RequestPageState extends State<RequestPage> {
                   children: [
                     GestureDetector(
                         onTap: () {
-                          openDeleteDialog(context);
+                          openImageDialog(context);
                         },
                         child: _image != null
                             ? Container(

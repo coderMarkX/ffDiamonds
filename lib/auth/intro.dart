@@ -1,43 +1,59 @@
 // @dart=2.9
 import 'package:ffdiamonds/auth/welcome.dart';
+import 'package:ffdiamonds/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_views_flutter/intro_views_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Intro extends StatelessWidget {
   final pages = [
     PageViewModel(
-        pageColor: const Color(0xFF03A9F4),
-        // iconImageAssetPath: 'assets/air-hostess.png',
-        // bubble: Image.asset('assets/air-hostess.png'),
-        body: const Text(
-            'Hassle-free  booking  of  flight  tickets  with  full  refund  on  cancellation'),
-        title: const Text('Flights'),
+            pageBackground: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            stops: [0.0, 1.0],
+            begin: FractionalOffset.topCenter,
+            end: FractionalOffset.bottomCenter,
+            tileMode: TileMode.repeated,
+            colors: [
+             secondaryColor,
+               primaryColor,
+            ],
+          ),
+        ),
+      ),
+ 
+        title: Text('Earn Diamonds', style: TextStyle(fontFamily: 'JusticeLeague')),
         titleTextStyle:
             const TextStyle(fontFamily: 'MyFont', color: Colors.white),
         bodyTextStyle:
             const TextStyle(fontFamily: 'MyFont', color: Colors.white),
-        mainImage: Text("A")
-        // Image.asset(
-        //   'assets/airplane.png',
-        //   height: 285.0,
-        //   width: 285.0,
-        //   alignment: Alignment.center,
-        // ),
+        mainImage: 
+                  Container(height: 200, child: Lottie.asset("assets/animation/earn.json")),
         ),
     PageViewModel(
-      pageColor: const Color(0xFF8BC34A),
-      // iconImageAssetPath: 'assets/waiter.png',
+             pageBackground: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            stops: [0.0, 1.0],
+            begin: FractionalOffset.topCenter,
+            end: FractionalOffset.bottomCenter,
+            tileMode: TileMode.repeated,
+            colors: [
+                        Colors.orange,
+              Colors.pinkAccent,
+  
+   
+            ],
+          ),
+        ),
+      ),
       body: const Text(
-          'We  work  for  the  comfort ,  enjoy  your  stay  at  our  beautiful  hotels'),
-      title: const Text('Hotels'),
-      mainImage: Text("B"),
-      // Image.asset(
-      //   'assets/hotel.png',
-      //   height: 285.0,
-      //   width: 285.0,
-      //   alignment: Alignment.center,
-      // ),
+          'Boost Your Youtube Channel', style: TextStyle(fontSize: 30, fontFamily: 'JusticeLeague'),),
+      // title: const Text('Boost Youtube'),
+        mainImage: 
+                  Container(height: 200, child: Lottie.asset("assets/animation/loading.json")),
       titleTextStyle:
           const TextStyle(fontFamily: 'MyFont', color: Colors.white),
       bodyTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
@@ -51,24 +67,16 @@ class Intro extends StatelessWidget {
             end: FractionalOffset.bottomCenter,
             tileMode: TileMode.repeated,
             colors: [
-              Colors.orange,
-              Colors.pinkAccent,
+                           primaryColor,
+             secondaryColor,
             ],
           ),
         ),
       ),
-      // iconImageAssetPath: 'assets/taxi-driver.png',
-      body: const Text(
-        'Easy  cab  booking  at  your  doorstep  with  cashless  payment  system',
-      ),
-      title: const Text('Cabs'),
-      mainImage: Text("C"),
-      // mainImage: Image.asset(
-      //   'assets/taxi.png',
-      //   height: 285.0,
-      //   width: 285.0,
-      //   alignment: Alignment.center,
-      // ),
+
+      title: const Text('Share', style: TextStyle( fontFamily: 'JusticeLeague')),
+        mainImage: 
+                  Container(height: 200, child: Lottie.asset("assets/animation/share.json")),
       titleTextStyle:
           const TextStyle(fontFamily: 'MyFont', color: Colors.white),
       bodyTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
@@ -77,13 +85,8 @@ class Intro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'IntroViews Flutter',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Builder(
+    return
+     Builder(
         builder: (context) => IntroViewsFlutter(
           pages,
           showNextButton: true,
@@ -99,7 +102,7 @@ class Intro extends StatelessWidget {
             fontSize: 18.0,
           ),
         ),
-      ),
+      
     );
   }
 }

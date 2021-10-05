@@ -1,12 +1,21 @@
 // @dart=2.9
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ffdiamonds/auth/welcome.dart';
 import 'package:ffdiamonds/screens/activity/conatctUs.dart';
+import 'package:ffdiamonds/screens/navigation.dart';
 import 'package:ffdiamonds/services/FireBaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
+import 'package:ffdiamonds/utils/globadData.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -14,6 +23,94 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final TextEditingController name = TextEditingController();
+  File _image;
+  final picker = ImagePicker();
+
+  void containerForSheet<T>({BuildContext context, Widget child}) {
+    showCupertinoModalPopup<T>(
+      context: context,
+      builder: (BuildContext context) => child,
+    ).then<void>((T value) {});
+  }
+
+  openImageDialog(BuildContext context) {
+    containerForSheet<String>(
+      context: context,
+      child: CupertinoActionSheet(
+        actions: <Widget>[
+          CupertinoActionSheetAction(
+            child: Text(
+              "Camera",
+              style: TextStyle(color: Colors.black, fontSize: 16),
+            ),
+            onPressed: () async {
+              Navigator.of(context, rootNavigator: true).pop("Discard");
+              final imageFile = await picker.pickImage(
+                  source: ImageSource.camera, imageQuality: 70);
+              File croppedFile = await ImageCropper.cropImage(
+                  sourcePath: imageFile.path,
+                  aspectRatioPresets: [CropAspectRatioPreset.square],
+                  androidUiSettings: AndroidUiSettings(
+                      activeControlsWidgetColor: secondaryColor,
+                      toolbarTitle: 'Crop',
+                      toolbarColor: primaryColor,
+                      toolbarWidgetColor: Colors.white,
+                      initAspectRatio: CropAspectRatioPreset.square,
+                      lockAspectRatio: true),
+                  iosUiSettings: IOSUiSettings(
+                    minimumAspectRatio: 1.0,
+                  ));
+
+              if (croppedFile != null) {
+                setState(() {
+                  _image = File(croppedFile.path);
+                });
+              }
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: Text(
+              "Gallery",
+              style: TextStyle(color: Colors.black, fontSize: 16),
+            ),
+            onPressed: () async {
+              Navigator.of(context, rootNavigator: true).pop("Discard");
+              final imageFile = await picker.pickImage(
+                  source: ImageSource.gallery, imageQuality: 70);
+              File croppedFile = await ImageCropper.cropImage(
+                  sourcePath: imageFile.path,
+                  aspectRatioPresets: [CropAspectRatioPreset.square],
+                  androidUiSettings: AndroidUiSettings(
+                      activeControlsWidgetColor: secondaryColor,
+                      toolbarTitle: 'Crop',
+                      toolbarColor: primaryColor,
+                      toolbarWidgetColor: Colors.white,
+                      initAspectRatio: CropAspectRatioPreset.square,
+                      lockAspectRatio: true),
+                  iosUiSettings: IOSUiSettings(minimumAspectRatio: 1.0));
+              if (croppedFile != null) {
+                setState(() {
+                  _image = File(croppedFile.path);
+                });
+              }
+            },
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text(
+            "Cancel",
+            style: TextStyle(color: Colors.black),
+          ),
+          isDefaultAction: true,
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop("Discard");
+          },
+        ),
+      ),
+    );
+  }
+
   Future<bool> sure() {
     return showDialog(
           context: context,
@@ -113,197 +210,206 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              // SizedBox(height: size.height / 15),
-              ClipPath(
-                clipper: LinePathClass(),
-                child: Container(
-                    width: Utils.mediaQ(context).width,
-                    height: 280,
-                    decoration: BoxDecoration(color: primaryColor),
-                    // decoration: BoxDecoration(
-                    //     image: DecorationImage(
-                    //   image: ExactAssetImage('assets/images/profileBg.jpg'),
-                    //   fit: BoxFit.cover,
-                    // )),
-                    child:
-
-                        //  userData.length < 1
-                        //     ? Utils.loading()
-                        //     :
-
-                        Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 15.0, top: 5),
-                              child: Align(
-                                alignment: FractionalOffset.bottomRight,
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        // setState(() {
-                                        //   haveNew = false;
-                                        // });
-                                        // Navigator.push(
-                                        //     context,
-                                        //     CupertinoPageRoute(
-                                        //         builder: (context) =>
-                                        //             NotificationList()
-
-                                        //             ));
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.topLeft,
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(30))),
-                                        child: Center(
-                                          child: Icon(
-                                              Icons.notifications_none_outlined,
-                                              color: primaryColor,
-                                              size: 25),
-                                        ),
-                                      ),
-                                    ),
-                                    // Visibility(
-                                    //   visible: haveNew,
-                                    //   child: Positioned(
-                                    //       right: 1,
-                                    //       top: 1,
-                                    //       child: Container(
-                                    //           decoration: BoxDecoration(
-                                    //               borderRadius:
-                                    //                   BorderRadius
-                                    //                       .circular(10.0),
-                                    //               color: Colors.red[400]),
-                                    //           constraints: BoxConstraints(
-                                    //               minWidth: 9,
-                                    //               minHeight: 9))),
-                                    // )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                // Navigator.push(
-                                //     context,
-                                //     CupertinoPageRoute(
-                                //         builder: (context) =>
-                                //             EditSeekerProfile(
-                                //                 data: userData)));
-                              },
-                              child: Container(
-                                margin: EdgeInsets.only(top: 5, right: 15),
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(30),
-                                  ),
-                                ),
-                                child: Icon(Icons.edit_outlined,
-                                    color: primaryColor, size: 25),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              color: Colors.grey, shape: BoxShape.circle),
-                          child: CircleAvatar(
-                            backgroundColor: primaryColor,
-                            child: CircleAvatar(
-                              radius: 90.0,
-                              child: ClipOval(
-                                  // child: Utils.cachedImage(
-                                  //     profile_store +
-                                  //             userData['image'] ??
-                                  //         "")
-
-                                  ),
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Column(
-                          children: [
-                            // Text(
-                            //     "${userData['name'][0].toUpperCase() + userData['name'].substring(1)}" ??
-                            //         "",
-                            //     style: TextStyle(
-                            //       color: whiteColor.withOpacity(.9),
-                            //       fontSize: 25.0,
-                            //       fontWeight: FontWeight.w800,
-                            //     )),
-                            SizedBox(height: 10),
-                            // Text(
-                            //     userData['tagline'] != null
-                            //         ? "${userData['tagline'].toUpperCase()}"
-                            //         : "",
-                            //     style: TextStyle(
-                            //       color: whiteColor,
-                            //       fontSize: 12.0,
-                            //     )),
-                            SizedBox(height: 10),
-                      
-                          ],
-                        ),
-                      ],
-                    )),
-              ),
-
-              //Options
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            Container(
+                width: Utils.mediaQ(context).width,
+                height: 250,
+                decoration: BoxDecoration(
+                    color: primaryColor.withOpacity(.3),
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(40),
+                        bottomRight: Radius.circular(40))),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Utils.iosRoute(
-                        context,
-                        ContactUs(),
-                        Utils.optionTile(context,
-                            Icons.contact_support_outlined, "Contact Us")),
+                    Align(
+                      alignment: FractionalOffset.topRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet<void>(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.only(
+                                    topLeft: const Radius.circular(30.0),
+                                    topRight: const Radius.circular(30.0))),
+                            context: context,
+                            builder: (BuildContext context) {
+                              return SingleChildScrollView(
+                                child: StatefulBuilder(builder:
+                                    (BuildContext context,
+                                        StateSetter setState) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        SizedBox(height: 50),
+                                        GestureDetector(
+                                            onTap: () {
+                                              openImageDialog(context);
+                                            },
+                                            child: _image == null
+                                                ? Container(
+                                                    height: 120,
+                                                    width: 120,
+                                                    child: CircleAvatar(
+                                                      backgroundColor:
+                                                          primaryColor,
+                                                      child: CircleAvatar(
+                                                        radius: 75.0,
+                                                        child: ClipOval(
+                                                            child: CachedNetworkImage(
+                                                                imageUrl: userData[
+                                                                    'profilePic'])),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    height: 120,
+                                                    width: 120,
+                                                    child: CircleAvatar(
+                                                      backgroundColor:
+                                                          primaryColor,
+                                                      child: CircleAvatar(
+                                                        radius: 75.0,
+                                                        child: ClipOval(
+                                                            child: Image(
+                                                                image: FileImage(
+                                                                    _image))),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                      ),
+                                                    ),
+                                                  )),
+                                        SizedBox(height: 100),
+                                        Utils.normalTextField("Name", name),
+                                        SizedBox(height: 50),
+                                        GestureDetector(
+                                            onTap: () async {
+                                              Utils.showLoadingDialog(
+                                                  this.context);
+                                              var imgUrl =
+                                                  userData['profilePic'];
+                                              if (_image != null) {
+                                                String fileName = DateTime.now()
+                                                    .millisecondsSinceEpoch
+                                                    .toString();
+                                                var reference = FirebaseStorage
+                                                    .instance
+                                                    .ref()
+                                                    .child("images")
+                                                    .child(fileName);
+                                                UploadTask uploadTask =
+                                                    reference.putFile(_image);
+                                                TaskSnapshot
+                                                    storageTaskSnapshot =
+                                                    await uploadTask;
+                                                imgUrl =
+                                                    await storageTaskSnapshot
+                                                        .ref
+                                                        .getDownloadURL();
+                                              }
 
-                    GestureDetector(
-                        onTap: () async {
-                          sure();
+                                              await FBService.updateData('user',
+                                                  FBService.getUser().uid, {
+                                                'name': name.text,
+                                                'profilePic': imgUrl
+                                              });
+                                              Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .pop();
+                                              await Navigator
+                                                  .pushAndRemoveUntil(
+                                                      context,
+                                                      CupertinoPageRoute(
+                                                          builder: (context) =>
+                                                              Nav()),
+                                                      (route) => false);
+                                            },
+                                            child:
+                                                Utils.flatButton("Save", 150)),
+                                        SizedBox(height: 20),
+                                      ],
+                                    ),
+                                  );
+                                }),
+                              );
+                            },
+                          );
                         },
-                        child: Utils.optionTile(
-                            context, Icons.exit_to_app_rounded, "Logout")),
-
-              
+                        child: Container(
+                          margin: EdgeInsets.only(top: 5, right: 15),
+                          width: 45,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            color: secondaryColor.withOpacity(.8),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child:
+                              Icon(Icons.edit, color: Colors.white, size: 30),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          color: Colors.grey, shape: BoxShape.circle),
+                      child: CircleAvatar(
+                        backgroundColor: primaryColor,
+                        child: CircleAvatar(
+                          radius: 100.0,
+                          child: ClipOval(
+                              child: CachedNetworkImage(
+                                  imageUrl: userData['profilePic'])),
+                          backgroundColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Text(
+                        // "${userData['name'][0].toUpperCase() + userData['name'].substring(1)}" ??
+                            "",
+                        style: TextStyle(
+                            color: secondaryColor,
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.w800))
                   ],
-                ),
+                )),
+
+            //Options
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              child: Column(
+                children: [
+                  Utils.iosRoute(
+                      context,
+                      ContactUs(),
+                      Utils.optionTile(context, Icons.contact_support_outlined,
+                          "Contact Us")),
+                  GestureDetector(
+                      onTap: () async {
+                        sure();
+                      },
+                      child: Utils.optionTile(
+                          context, Icons.exit_to_app_rounded, "Logout")),
+                ],
               ),
-myApps()
-
-
-
-            ],
-          ),
+            ),
+            myApps()
+          ],
         ),
       ),
     ));
   }
 
-  
   getData() async {
     List featured = [];
     var a = await FBService.getData('otherApps');
@@ -318,133 +424,142 @@ myApps()
     return featured;
   }
 
-
   Widget myApps() {
     return FutureBuilder(
         future: getData(),
         builder: (context, snap) {
-          
-          return (!snap.hasData && snap.data.length > 0) ? Container() : Container(
-      decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15), topRight: Radius.circular(15))),
-      child: GridView.builder(
-        physics: BouncingScrollPhysics(),
-        shrinkWrap: true,
-        gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 1.7)),
-        itemCount: snap.data.length,
-        itemBuilder: (context, index) {
-          var item = snap.data[index];
-          List allSS = item['img'];
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5),
-            child: GestureDetector(
-                onTap: () {
-                  showModalBottomSheet<void>(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.only(
-                            topLeft: const Radius.circular(30.0),
-                            topRight: const Radius.circular(30.0))),
-                    context: context,
-                    builder: (BuildContext context) {
-                      return StatefulBuilder(builder:
-                          (BuildContext context, StateSetter setState) {
-                        return ListView(
-                          physics: BouncingScrollPhysics(),
-                          children: [
-                            SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+          return (!snap.hasData)
+              ? Container()
+              : Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15))),
+                  child: GridView.builder(
+                    physics: BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: MediaQuery.of(context).size.width /
+                            (MediaQuery.of(context).size.height / 1.7)),
+                    itemCount: snap.data.length,
+                    itemBuilder: (context, index) {
+                      var item = snap.data[index];
+                      List allSS = item['img'];
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        child: GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet<void>(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: new BorderRadius.only(
+                                        topLeft: const Radius.circular(30.0),
+                                        topRight: const Radius.circular(30.0))),
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return StatefulBuilder(builder:
+                                      (BuildContext context,
+                                          StateSetter setState) {
+                                    return ListView(
+                                      physics: BouncingScrollPhysics(),
+                                      children: [
+                                        SizedBox(height: 20),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            SizedBox(width: 20),
+                                            SizedBox(width: 20),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(item['name'],
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 20)),
+                                                SizedBox(height: 10),
+                                                Container(
+                                                    alignment:
+                                                        Alignment.bottomRight,
+                                                    child: Utils.flatButton(
+                                                        "Download", 100,
+                                                        color:
+                                                            Colors.green[800],
+                                                        radius: 5,
+                                                        height: 35)),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(height: 20),
+                                        Container(
+                                          height: 200,
+                                          child: ListView.builder(
+                                              physics: BouncingScrollPhysics(),
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: allSS.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index2) {
+                                                var ss = allSS[index2];
+                                                return Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 10),
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        child:
+                                                            Image.network(ss)));
+                                              }),
+                                        ),
+                                        Container(
+                                            padding: EdgeInsets.only(
+                                                left: 5, top: 5),
+                                            alignment: Alignment.topLeft,
+                                            child: Text('Description',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.w500))),
+                                        Container(
+                                            padding: EdgeInsets.only(
+                                                left: 5, top: 10),
+                                            alignment: Alignment.topLeft,
+                                            child: Text(item['desc'],
+                                                style: TextStyle(
+                                                    color: Colors.grey[700],
+                                                    fontSize: 17,
+                                                    fontWeight:
+                                                        FontWeight.w400)))
+                                      ],
+                                    );
+                                  });
+                                },
+                              );
+                            },
+                            child: Column(
                               children: [
-                                SizedBox(width: 20),
                                 Container(
-                                    height: 100,
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
                                         child: Image.network(item['l']))),
-                                SizedBox(width: 20),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(item['name'],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 20)),
-                                    SizedBox(height: 10),
-                                    Container(
-                                        alignment: Alignment.bottomRight,
-                                        child: Utils.flatButton("Download", 100,
-                                            color: Colors.green[800],
-                                            radius: 5,
-                                            height: 35)),
-                                  ],
-                                )
+                                Text(item['name'],
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 20))
                               ],
-                            ),
-                            SizedBox(height: 20),
-                            Container(
-                              height: 200,
-                              child: ListView.builder(
-                                  physics: BouncingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: allSS.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index2) {
-                                    var ss = allSS[index2];
-                                    return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            child: Image.network(ss)));
-                                  }),
-                            ),
-                            Container(
-                                padding: EdgeInsets.only(left: 5, top: 5),
-                                alignment: Alignment.topLeft,
-                                child: Text('Description',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500))),
-                            Container(
-                                padding: EdgeInsets.only(left: 5, top: 10),
-                                alignment: Alignment.topLeft,
-                                child: Text(item['desc'],
-                                    style: TextStyle(
-                                        color: Colors.grey[700],
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w400)))
-                          ],
-                        );
-                      });
+                            )),
+                      );
                     },
-                  );
-                },
-                child: Column(
-                  children: [
-                    Container(
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.network(item['l']))),
-                    Text(item['name'],
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 20))
-                  ],
-                )),
-          );
-        },
-      ),
-    );
-        }
-    );
-        
+                  ),
+                );
+        });
   }
-
 }
 
 
