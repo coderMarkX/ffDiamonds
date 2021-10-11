@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:ffdiamonds/screens/home.dart';
 import 'package:ffdiamonds/screens/profile.dart';
 import 'package:ffdiamonds/screens/wallet.dart';
+import 'package:ffdiamonds/services/FireBaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
 import 'package:ffdiamonds/utils/globadData.dart';

@@ -1,13 +1,19 @@
 // @dart=2.9
+import 'package:ffdiamonds/utils/globadData.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+
+final db = FirebaseDatabase.instance;
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final currUser = _auth.currentUser;
+var messaging = FirebaseMessaging.instance;
+bool intro = false;
 
 class FBService {
-  static final db = FirebaseDatabase.instance;
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
-  static final currUser = _auth.currentUser;
-  static final serverTime = ServerValue.timestamp;
-
   static User getUser() {
     return _auth.currentUser;
   }
@@ -32,7 +38,34 @@ class FBService {
     return db.reference().child(key).reference().child(key2).onValue;
   }
 
+  static getDataStreamOnly(String key) {
+    return db.reference().child(key).onValue;
+  }
+
   static logout() {
     return _auth.signOut();
   }
+}
+
+setCustom() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  intro = prefs.getString('intro') == null ? true : false;
+  await db
+      .reference()
+      .child("custom")
+      .once()
+      .then((DataSnapshot dataSnapshot) async {
+    custom = await dataSnapshot.value;
+  });
+
+  await messaging.getToken().then((value) {
+    fcm = value;
+  });
+}
+
+setUser() async {
+  await FBService.getInsideData('user', FBService.getUser().uid)
+      .then((dataSnapshot) async {
+    userData = dataSnapshot.value;
+  });
 }

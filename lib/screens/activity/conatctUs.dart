@@ -141,7 +141,7 @@ class _ContactUsState extends State<ContactUs> {
                 Utils.normalTextField("Phone Number", phone,
                     type: TextInputType.number),
                 SizedBox(height: 20),
-                Utils.normalTextField("Message", msg, line: 3),
+                Utils.normalTextField("Message", msg, line: 5),
                 SizedBox(height: 30),
                 Row(
                   children: [
@@ -149,7 +149,7 @@ class _ContactUsState extends State<ContactUs> {
                         padding: const EdgeInsets.only(left: 8.0, bottom: 8),
                         child: Text("Attachment",
                             style: TextStyle(
-                                color: primaryColor,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold)))
                   ],
                 ),
@@ -192,33 +192,38 @@ class _ContactUsState extends State<ContactUs> {
                 SizedBox(height: 50),
                 GestureDetector(
                     onTap: () async {
-                      Utils.showLoadingDialog(context);
-                      var timeStamp =
-                          DateTime.now().millisecondsSinceEpoch.toString();
-                      String fileName =
-                          DateTime.now().millisecondsSinceEpoch.toString();
-                      var reference = FirebaseStorage.instance
-                          .ref()
-                          .child("contactus")
-                          .child(fileName);
-                      UploadTask uploadTask = reference.putFile(_image);
-                      TaskSnapshot storageTaskSnapshot = await uploadTask;
-                      storageTaskSnapshot.ref
-                          .getDownloadURL()
-                          .then((downloadUrl) {
-                        final databaseRef =
-                            FirebaseDatabase.instance.reference();
-                        databaseRef.child('contactUs').child(timeStamp).update({
-                          'uid': FBService.getUser().uid,
-                          'name': name.text,
-                          'phone': phone.text,
-                          'image': downloadUrl,
-                          'msg': msg.text,
-                          'timestanp': timeStamp,
+                      if (name.text.isEmpty ||
+                          phone.text.isEmpty ||
+                          msg.text.isEmpty ||
+                          _image == null) {
+                        Utils.showToast("You must fill all fields");
+                      } else {
+                        Utils.showLoadingDialog(context);
+                        var reference = FirebaseStorage.instance
+                            .ref()
+                            .child("contactus")
+                            .child(timestamp);
+                        UploadTask uploadTask = reference.putFile(_image);
+                        TaskSnapshot storageTaskSnapshot = await uploadTask;
+                        storageTaskSnapshot.ref
+                            .getDownloadURL()
+                            .then((downloadUrl) {
+                          final databaseRef =
+                              FirebaseDatabase.instance.reference();
+                          databaseRef
+                              .child('contactUs')
+                              .child(timestamp)
+                              .update({
+                            'uid': FBService.getUser().uid,
+                            'name': name.text,
+                            'phone': phone.text,
+                            'image': downloadUrl,
+                            'msg': msg.text,
+                            'timestanp': timestamp,
+                          });
                         });
-                      });
-                      Navigator.of(context).pop();
-                      await Utils.success(context, Nav());
+                        await Utils.success(context, isWid: true, wid: Nav());
+                      }
                     },
                     child:
                         Utils.flatButton("Submit", 150, color: secondaryColor))

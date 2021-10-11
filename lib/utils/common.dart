@@ -39,36 +39,6 @@ class Utils {
         child: wid);
   }
 
-  // static Widget hireOrFind(String title, Color color, Color btnColor,
-  //     double width, double height, String src, String btnText) {
-  //   return Center(
-  //     child: Padding(
-  //         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-  //         child: Container(
-  //             height: height,
-  //             width: width,
-  //             decoration: BoxDecoration(
-  //               borderRadius: BorderRadius.all(Radius.circular(20)),
-  //               color: color,
-  //             ),
-  //             child: Column(
-  //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //               children: [
-  //                 Text(
-  //                   title,
-  //                   textAlign: TextAlign.center,
-  //                 ),
-  //                 Container(height: 120, width: 120, child: Lottie.asset(src)),
-  //                 // Image.asset(
-  //                 //   src,
-  //                 //   height: 100,
-  //                 // ),
-  //                 Utils.button(btnText, 100, height: 40, color: btnColor)
-  //               ],
-  //             ))),
-  //   );
-  // }
-
   static Widget normalTextField(String title, TextEditingController controller,
       {bool enabled = true,
       TextInputType type = TextInputType.text,
@@ -107,36 +77,6 @@ class Utils {
                     fontSize: 20,
                     fontWeight: FontWeight.w600)),
             leading: Icon(icon, color: primaryColor.withOpacity(.8), size: 35)),
-      ),
-    );
-  }
-
-  static Widget leftContainer(Widget wid, {double top: 20, double left: 20}) {
-    return Container(
-      alignment: Alignment.topLeft,
-      margin: EdgeInsets.only(left: left, top: top),
-      child: wid,
-    );
-  }
-
-  static Widget simpleTitle(String title,
-      {double top: 20,
-      double left: 20,
-      double right: 20,
-      double fSize = 25,
-      Color color = primaryColor}) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        color: color.withOpacity(0.1),
-      ),
-      alignment: Alignment.topLeft,
-      margin: EdgeInsets.only(left: left, top: top, right: right, bottom: 10),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(title,
-            style: TextStyle(
-                color: color, fontSize: fSize, fontWeight: FontWeight.bold)),
       ),
     );
   }
@@ -244,21 +184,6 @@ class Utils {
     );
   }
 
-  // static Widget cachedImage(url, {double height = 100, double width = 100}) {
-  //   return CachedNetworkImage(
-  //     imageUrl: url,
-  //     imageBuilder: (context, imageProvider) => Container(
-  //         height: height,
-  //         width: width,
-  //         decoration: BoxDecoration(
-  //           image: DecorationImage(
-  //             image: imageProvider,
-  //             fit: BoxFit.cover,
-  //           ),
-  //         )),
-  //   );
-  // }
-
   static Future<void> showLoadingDialog(BuildContext context) async {
     return showDialog<void>(
         context: context,
@@ -267,11 +192,12 @@ class Utils {
           return new WillPopScope(
               onWillPop: () async => false,
               child: AlertDialog(
+                  insetPadding: EdgeInsets.symmetric(horizontal: 100),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(1000.0))),
                   backgroundColor: Colors.white,
                   content: Container(
-                    width: 120.0,
+                    width: 150.0,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(50))),
                     child: Lottie.asset('assets/animation/loading.json'),
@@ -297,18 +223,20 @@ class Utils {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  static success(context, Widget wid,
-      {String text = "Success", IconData icon = Icons.check_circle}) {
+  static success(context,
+      {bool isWid = false, Widget wid, String text = "Success", time = 2}) {
     showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
-          Future.delayed(Duration(milliseconds: 300), () async {
+          Future.delayed(Duration(seconds: time), () async {
             Navigator.pop(context);
-            Navigator.pushAndRemoveUntil(
-                context,
-                CupertinoPageRoute(builder: (BuildContext context) => wid),
-                (route) => false);
+            if (isWid) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  CupertinoPageRoute(builder: (BuildContext context) => wid),
+                  (route) => false);
+            }
           });
           return WillPopScope(
             onWillPop: () async => false,
@@ -316,8 +244,7 @@ class Utils {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))),
               content: Container(
-                  width: 180.0,
-                  height: 130.0,
+                  height: 300.0,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.rectangle,
@@ -325,9 +252,14 @@ class Utils {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Icon(icon, color: primaryColor, size: 70),
+                      Container(
+                          height: 200,
+                          child: Lottie.asset('assets/animation/success.json')),
                       Text(text,
-                          style: TextStyle(color: primaryColor, fontSize: 30))
+                          style: TextStyle(
+                              color: primaryColor,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold))
                     ],
                   )),
             ),
@@ -432,32 +364,5 @@ class AppBarWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class LinePathClass extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(0.0, size.height - 50);
-
-    var firstEndPoint = Offset(size.width * .7, size.height - 40);
-    var firstControlPoint = Offset(size.width * .25, size.height);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
-        firstEndPoint.dx, firstEndPoint.dy);
-
-    var secondEndPoint = Offset(size.width, size.height - 45);
-    var secondControlPoint = Offset(size.width * 0.84, size.height - 50);
-    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
-        secondEndPoint.dx, secondEndPoint.dy);
-    path.lineTo(size.width, size.height);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper oldClipper) {
-    return false;
   }
 }

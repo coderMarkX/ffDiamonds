@@ -70,13 +70,13 @@ class _WalletState extends State<Wallet> {
       return;
     }
     _interstitialAd.fullScreenContentCallback = FullScreenContentCallback(
-      onAdShowedFullScreenContent: (InterstitialAd ad) => {
+      onAdShowedFullScreenContent: (InterstitialAd ad) async => {
         FBService.updateData('user', FBService.getUser().uid, {
           'coin': coin + custom['interAd'],
-        })
+        }),
       },
       onAdDismissedFullScreenContent: (InterstitialAd ad) {
-        print('$ad od onAdShowedFullScreenCont.');
+        Utils.success(context, text: 'Congratulation 🎉', time: 3);
         ad.dispose();
         _createInterstitialAd();
       },
@@ -96,12 +96,10 @@ class _WalletState extends State<Wallet> {
         request: request,
         rewardedAdLoadCallback: RewardedAdLoadCallback(
           onAdLoaded: (RewardedAd ad) {
-            print('${ad.responseInfo} Rloaded.');
             _rewardedAd = ad;
             _numRewardedLoadAttempts = 0;
           },
           onAdFailedToLoad: (LoadAdError error) {
-            print('RewardedAd failed to load: $error');
             _rewardedAd = null;
             _numRewardedLoadAttempts += 1;
             if (_numRewardedLoadAttempts <= maxFailedLoadAttempts) {
@@ -113,14 +111,15 @@ class _WalletState extends State<Wallet> {
 
   void _showRewardedAd() {
     if (_rewardedAd == null) {
-      print('Warning: attempt to show rewarded before loaded.');
+      // print('Warning: attempt to show rewarded before loaded.');
+      Utils.showToast("Please try after some time");
       return;
     }
     _rewardedAd.fullScreenContentCallback = FullScreenContentCallback(
       onAdShowedFullScreenContent: (RewardedAd ad) =>
           print('ad onAdShowedFullScreenContent.'),
       onAdDismissedFullScreenContent: (RewardedAd ad) {
-        print('$ad onAdDismissedFullScreenContent.');
+        Utils.success(context, text: 'Congratulation 🎉', time: 3);
         ad.dispose();
         _createRewardedAd();
       },
@@ -131,7 +130,8 @@ class _WalletState extends State<Wallet> {
       },
     );
     _rewardedAd.setImmersiveMode(true);
-    _rewardedAd.show(onUserEarnedReward: (RewardedAd ad, RewardItem reward) {
+    _rewardedAd.show(
+        onUserEarnedReward: (RewardedAd ad, RewardItem reward) async {
       FBService.updateData('user', FBService.getUser().uid, {
         'coin': coin + custom['rewardAd'],
       });
@@ -179,19 +179,16 @@ class _WalletState extends State<Wallet> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text("Available",
+                                  Text("Available Points",
                                       style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 30,
-                                        // fontFamily: 'HillHouse'
-                                      )),
+                                          color: Colors.white.withOpacity(.9),
+                                          fontSize: 25,
+                                          fontFamily: 'JusticeLeague')),
                                   SizedBox(height: 10),
                                   Text(data['coin'].toString(),
                                       style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 35,
-                                        // fontFamily: 'JusticeLeague'
-                                      )),
+                                          color: Colors.white, fontSize: 40)),
+                                  SizedBox(height: 10),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
@@ -204,9 +201,9 @@ class _WalletState extends State<Wallet> {
                                                       TopUp()));
                                         },
                                         child: Container(
-                                          margin: EdgeInsets.only(right: 10),
+                                          margin: EdgeInsets.only(right: 20),
                                           height: 50,
-                                          width: 100,
+                                          width: 110,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(10)),
@@ -235,16 +232,13 @@ class _WalletState extends State<Wallet> {
                             );
                     })),
             SizedBox(height: 5),
-            Container(
-              height: 500.0,
-              color: secondaryColor,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Container(
+                padding: EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15)),
-                  color: Colors.white,
-                ),
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    color: Colors.white),
                 child: Column(
                   children: [
                     Container(
@@ -280,7 +274,8 @@ class _WalletState extends State<Wallet> {
                               tileColor: primaryColor,
                               trailing: Utils.flatButton("Earn", 80,
                                   height: 35, radius: 10),
-                              title: Text("Earn ${custom['interAd']}",
+                              title: Text(
+                                  "Earn ${custom['interAd'] ?? '0'} Points",
                                   style: TextStyle(
                                       color: primaryColor,
                                       fontSize: 15,
@@ -320,7 +315,8 @@ class _WalletState extends State<Wallet> {
                               tileColor: primaryColor,
                               trailing: Utils.flatButton("Earn", 80,
                                   height: 35, radius: 10),
-                              title: Text("Earn ${custom['rewardAd']}",
+                              title: Text(
+                                  "Earn ${custom['rewardAd'] ?? '0'} Points",
                                   style: TextStyle(
                                       color: primaryColor,
                                       fontSize: 15,
@@ -354,7 +350,7 @@ class _WalletState extends State<Wallet> {
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Container(
-                                          height: 150,
+                                          height: 170,
                                           child: Lottie.asset(
                                               'assets/animation/share.json')),
                                       Container(
@@ -432,16 +428,15 @@ class _WalletState extends State<Wallet> {
                                     color: secondaryColor.withOpacity(.8)),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Icon(
-                                      MaterialCommunityIcons.diamond_stone,
-                                      size: 35,
-                                      color: primaryColor),
+                                  child: Icon(MaterialCommunityIcons.diamond,
+                                      size: 35, color: primaryColor),
                                 ),
                               ),
                               tileColor: primaryColor,
                               trailing: Utils.flatButton("Refer", 80,
                                   height: 35, radius: 10),
-                              title: Text("Earn ${custom['onRefer']}",
+                              title: Text(
+                                  "Earn ${custom['onRefer'] ?? '0'} Points",
                                   style: TextStyle(
                                       color: primaryColor,
                                       fontSize: 15,
@@ -451,7 +446,6 @@ class _WalletState extends State<Wallet> {
                         ),
                       ),
                     ),
-                    // Text("Earn 10 Diamond"),
                   ],
                 ),
               ),

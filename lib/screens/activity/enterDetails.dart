@@ -7,7 +7,6 @@ import 'package:ffdiamonds/services/FireBaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
 import 'package:ffdiamonds/utils/globadData.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,6 +37,7 @@ class _EnterDetailsState extends State<EnterDetails> {
           resizeToAvoidBottomInset: false,
           backgroundColor: bgColor,
           body: PageView(
+            physics: NeverScrollableScrollPhysics(),
             controller: controller,
             pageSnapping: true,
             children: [page1(), page2()],
@@ -140,13 +140,13 @@ class _EnterDetailsState extends State<EnterDetails> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(height: Utils.mediaQ(context).height / 7),
-                    Text("Setup your profile",
-                    style: TextStyle(
-                        color:Colors.white,
-                        fontFamily: 'HillHouse',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 35)),
-                              Container(height: Utils.mediaQ(context).height / 10),
+            Text("Setup your profile",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'HillHouse',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 35)),
+            Container(height: Utils.mediaQ(context).height / 10),
             GestureDetector(
                 onTap: () {
                   openImageDialog(context);
@@ -183,10 +183,12 @@ class _EnterDetailsState extends State<EnterDetails> {
             SizedBox(height: 50),
             GestureDetector(
                 onTap: () async {
-                name.text.isEmpty ? Utils.showToast("You must enter your name", color: Colors.red) :
-                  controller.animateToPage(1,
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.ease);
+                  name.text.isEmpty
+                      ? Utils.showToast("You must enter your name",
+                          color: Colors.red)
+                      : controller.animateToPage(1,
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.ease);
                 },
                 child: Utils.flatButton(
                     "Next", MediaQuery.of(context).size.width,
@@ -250,7 +252,11 @@ class _EnterDetailsState extends State<EnterDetails> {
                 ),
               ),
             ),
-            Container(height: Utils.mediaQ(context).height / 2),
+            Container(height: Utils.mediaQ(context).height / 6),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: Image.asset('assets/image/code.jpg', height: 200)),
+            SizedBox(height: 50),
             Utils.normalTextField("Code", code),
             SizedBox(height: 50),
             GestureDetector(
@@ -326,22 +332,29 @@ class _EnterDetailsState extends State<EnterDetails> {
                                 "vibrate": "300",
                                 "priority": "high",
                                 "body":
-                                    'Congrats $censuredEmail used your code ',
+                                    'Congrats $censuredEmail used your code',
                                 "title": 'Congratulation 🎉',
                                 "sound": "default"
                               }
                             }),
                           );
 
+                          FBService.updateData2(
+                              'notification', odata['uid'], timestamp, {
+                            'title':
+                                'Congratulation 🎉 you received ${custom['onRefer']} points',
+                            'body': 'Congrats $censuredEmail used your code'
+                          });
+
                           await Navigator.pushAndRemoveUntil(
                               context,
                               CupertinoPageRoute(builder: (context) => Nav()),
                               (route) => false);
                         } else {
-                          print("used all");
+                          Utils.showToast("Refer code limit exceeded");
                         }
                       } else {
-                        print('not found');
+                        Utils.showToast("Please enter valid refer code");
                       }
                     });
                   } catch (e) {

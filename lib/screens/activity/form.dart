@@ -115,137 +115,147 @@ class _RequestPageState extends State<RequestPage> {
     return SafeArea(
       child: Scaffold(
           backgroundColor: greyish,
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Column(children: [
-                AppBarWidget(title: "Add Your"),
-                Utils.normalTextField("Name", name),
-                SizedBox(height: 20),
-                Utils.normalTextField("Phone Number", phone),
-                SizedBox(height: 20),
-                Utils.normalTextField("Url", url),
-                SizedBox(height: 30),
-                Row(
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.only(left: 8.0, bottom: 8),
-                        child: Text("Logo",
-                            style: TextStyle(
-                                color: primaryColor,
-                                fontWeight: FontWeight.bold)))
-                  ],
-                ),
-                Row(
-                  children: [
-                    GestureDetector(
-                        onTap: () {
-                          openImageDialog(context);
-                        },
-                        child: _image != null
-                            ? Container(
-                                height: 120,
-                                width: 120,
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(
-                                        width: 1, color: Colors.black54),
-                                    image: DecorationImage(
-                                      image: FileImage(_image),
-                                      fit: BoxFit.contain,
-                                    )))
-                            : Container(
-                                height: 120,
-                                width: 120,
-                                child: Center(
-                                    child: Icon(
-                                  Icons.photo,
-                                  color: primaryColor.withOpacity(.7),
-                                  size: 70,
+          body: Container(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(children: [
+                  AppBarWidget(title: "Add Youtube Channel"),
+                  SizedBox(height: 50),
+                  Utils.normalTextField("Channel Name", name,
+                      tColor: primaryColor),
+                  SizedBox(height: 20),
+                  Utils.normalTextField("Phone Number", phone,
+                      tColor: primaryColor),
+                  SizedBox(height: 20),
+                  Utils.normalTextField("Channel Url", url,
+                      tColor: primaryColor),
+                  SizedBox(height: 30),
+                  Row(
+                    children: [
+                      Padding(
+                          padding: const EdgeInsets.only(left: 8.0, bottom: 8),
+                          child: Text("Channel Logo",
+                              style: TextStyle(
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold)))
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            openImageDialog(context);
+                          },
+                          child: _image != null
+                              ? Container(
+                                  height: 120,
+                                  width: 120,
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      border: Border.all(
+                                          width: 1, color: Colors.black54),
+                                      image: DecorationImage(
+                                        image: FileImage(_image),
+                                        fit: BoxFit.contain,
+                                      )))
+                              : Container(
+                                  height: 120,
+                                  width: 120,
+                                  child: Center(
+                                      child: Icon(
+                                    Icons.photo,
+                                    color: primaryColor.withOpacity(.7),
+                                    size: 70,
+                                  )),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      border: Border.all(
+                                          width: 1, color: Colors.black54)),
                                 )),
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                    border: Border.all(
-                                        width: 1, color: Colors.black54)),
-                              )),
-                  ],
-                ),
-                SizedBox(height: 50),
-                GestureDetector(
-                    onTap: () async {
-                      // Common.showLoadingDialog(this.context, _keyLoader);
-                      var timeStamp =
-                          DateTime.now().millisecondsSinceEpoch.toString();
-                      String fileName =
-                          DateTime.now().millisecondsSinceEpoch.toString();
-                      var reference = FirebaseStorage.instance
-                          .ref()
-                          .child("images")
-                          .child(fileName);
-                      UploadTask uploadTask = reference.putFile(_image);
-                      TaskSnapshot storageTaskSnapshot = await uploadTask;
-                      storageTaskSnapshot.ref
-                          .getDownloadURL()
-                          .then((downloadUrl) {
-                        final databaseRef =
-                            FirebaseDatabase.instance.reference();
-                        databaseRef.child('featured').child(timeStamp).update({
-                          'name': name.text,
-                          'url': url.text,
-                          'logo': downloadUrl,
-                          'timestanp': timeStamp,
-                          'status': 0
-                        });
-                      });
-
-                      // Navigator.of(_keyLoader.currentContext, rootNavigator: true)
-                      //     .pop();
-
-                      await showDialog(
-                          barrierDismissible: false,
-                          context: this.context,
-                          builder: (_) {
-                            return AlertDialog(
-                              title: Text(
-                                "Suucess",
-                              ),
-                              content: Text("OK"),
-                              actions: [
-                                TextButton(
-                                    child: Text("Ok"),
-                                    onPressed: () {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop('dialog');
-                                      // Navigator.pushReplacement(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //       builder: (context) => TabbarScreen()),
-                                      // );
-                                    })
-                              ],
-                            );
+                    ],
+                  ),
+                  SizedBox(height: 50),
+                  GestureDetector(
+                      onTap: () async {
+                        // Common.showLoadingDialog(this.context, _keyLoader);
+                        var timeStamp =
+                            DateTime.now().millisecondsSinceEpoch.toString();
+                        String fileName =
+                            DateTime.now().millisecondsSinceEpoch.toString();
+                        var reference = FirebaseStorage.instance
+                            .ref()
+                            .child("images")
+                            .child(fileName);
+                        UploadTask uploadTask = reference.putFile(_image);
+                        TaskSnapshot storageTaskSnapshot = await uploadTask;
+                        storageTaskSnapshot.ref
+                            .getDownloadURL()
+                            .then((downloadUrl) {
+                          final databaseRef =
+                              FirebaseDatabase.instance.reference();
+                          databaseRef
+                              .child('featured')
+                              .child(timeStamp)
+                              .update({
+                            'name': name.text,
+                            'url': url.text,
+                            'logo': downloadUrl,
+                            'timestanp': timeStamp,
+                            'status': 0
                           });
-                    },
-                    child:
-                        Utils.flatButton("Submit", 150, color: secondaryColor)
-                    //  Container(
-                    //     height: 50,
-                    //     width: 150,
-                    //     decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.all(Radius.circular(10)),
-                    //       color: primaryColor,
-                    //     ),
-                    //     child: Center(
-                    //         child: Text("Submit",
-                    //             style: TextStyle(
-                    //                 color: Colors.white,
-                    //                 fontSize: 17,
-                    //                 fontWeight: FontWeight.w600)))),
-                    )
-              ]),
+                        });
+
+                        // Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+                        //     .pop();
+
+                        await showDialog(
+                            barrierDismissible: false,
+                            context: this.context,
+                            builder: (_) {
+                              return AlertDialog(
+                                title: Text(
+                                  "Suucess",
+                                ),
+                                content: Text("OK"),
+                                actions: [
+                                  TextButton(
+                                      child: Text("Ok"),
+                                      onPressed: () {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop('dialog');
+                                        // Navigator.pushReplacement(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //       builder: (context) => TabbarScreen()),
+                                        // );
+                                      })
+                                ],
+                              );
+                            });
+                      },
+                      child:
+                          Utils.flatButton("Submit", 150, color: secondaryColor)
+                      //  Container(
+                      //     height: 50,
+                      //     width: 150,
+                      //     decoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.all(Radius.circular(10)),
+                      //       color: primaryColor,
+                      //     ),
+                      //     child: Center(
+                      //         child: Text("Submit",
+                      //             style: TextStyle(
+                      //                 color: Colors.white,
+                      //                 fontSize: 17,
+                      //                 fontWeight: FontWeight.w600)))),
+                      )
+                ]),
+              ),
             ),
           )),
     );

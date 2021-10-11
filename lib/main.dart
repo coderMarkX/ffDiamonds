@@ -1,10 +1,8 @@
 // @dart=2.9
-
 import 'package:ffdiamonds/auth/intro.dart';
 import 'package:ffdiamonds/auth/welcome.dart';
 import 'package:ffdiamonds/screens/navigation.dart';
 import 'package:ffdiamonds/services/FireBaseServices.dart';
-import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
 import 'package:ffdiamonds/utils/globadData.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -47,6 +45,7 @@ Future<void> main() async {
         .setForegroundNotificationPresentationOptions(
             alert: true, badge: true, sound: true);
   }
+  await setCustom();
   runApp(MyApp());
 }
 
@@ -58,33 +57,30 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final FirebaseDatabase db = FirebaseDatabase.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  var messaging = FirebaseMessaging.instance;
+
   bool loggedIn = false;
-  bool intro = false;
 
-  setCustom() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      intro = prefs.getString('intro') == null ? true : false;
-    });
-    await db
-        .reference()
-        .child("custom")
-        .once()
-        .then((DataSnapshot dataSnapshot) async {
-      custom = dataSnapshot.value;
-    });
+  // setCustom() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   intro = prefs.getString('intro') == null ? true : false;
+  //   await db
+  //       .reference()
+  //       .child("custom")
+  //       .once()
+  //       .then((DataSnapshot dataSnapshot) async {
+  //     custom = await dataSnapshot.value;
+  //   });
 
-    await messaging.getToken().then((value) {
-      fcm = value;
-    });
-    setState(() {});
-  }
+  //   await messaging.getToken().then((value) {
+  //     fcm = value;
+  //   });
+  //   setState(() {});
+  // }
 
   @override
   void initState() {
     super.initState();
-    setCustom();
+
     if (_auth.currentUser != null) {
       setState(() {
         loggedIn = true;

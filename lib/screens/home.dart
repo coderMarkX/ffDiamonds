@@ -1,5 +1,6 @@
 // @dart=2.9
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ffdiamonds/game/main.dart';
 import 'package:ffdiamonds/screens/activity/form.dart';
 import 'package:ffdiamonds/services/FireBaseServices.dart';
 // import 'package:ffdiamonds/services/FBServices.dart';
@@ -17,19 +18,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  setUser() async {
-    await FBService.getInsideData('user', FBService.getUser().uid)
-        .then((dataSnapshot) async {
-      userData = dataSnapshot.value;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    setUser();
-  }
-
   getData() async {
     List featured = [];
     var a = await FBService.getData('featured');
@@ -54,6 +42,15 @@ class _HomeState extends State<Home> {
               child: Column(
                 children: [
                   Padding(
+                      padding: EdgeInsets.only(
+                          top: 15, left: 16, right: 16, bottom: 10),
+                      child: Utils.iosRoute(
+                          context,
+                          MyGame(),
+                          Utils.optionTile(
+                              context, Icons.gamepad_outlined, "Play Game"))),
+                  Divider(),
+                  Padding(
                     padding: EdgeInsets.only(
                         top: 25, left: 16, right: 16, bottom: 10),
                     child: Row(
@@ -76,17 +73,17 @@ class _HomeState extends State<Home> {
                                     BorderRadius.all(Radius.circular(10)),
                                 color: secondaryColor.withOpacity(.5)),
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Add your",
+                                  "Add",
                                   style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       color: primaryColor),
                                 ),
                                 SizedBox(width: 3),
-                                Icon(Icons.arrow_forward_ios,
-                                    size: 12, color: primaryColor)
+                                Icon(Icons.add, size: 20, color: primaryColor)
                               ],
                             ),
                           ),
@@ -94,6 +91,7 @@ class _HomeState extends State<Home> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 10),
                   FutureBuilder(
                       future: getData(),
                       builder: (context, snap) {
@@ -110,7 +108,7 @@ class _HomeState extends State<Home> {
                                                 (MediaQuery.of(context)
                                                         .size
                                                         .height /
-                                                    3)),
+                                                    2.5)),
                                 itemCount: snap.data.length,
                                 itemBuilder: (BuildContext ctx, index) {
                                   var item = snap.data[index];

@@ -56,19 +56,19 @@ class _SignupState extends State<Signup> {
             .child(refCode)
             .update({'uid': _auth.currentUser.uid, 'code': refCode});
         Navigator.of(context, rootNavigator: true).pop();
-        // if (devices.contains(androidInfo.androidId)) {
-        //   Utils.showToast("This device is already registered",
-        //       color: Colors.red);
-        //   await Navigator.pushAndRemoveUntil(
-        //       context,
-        //       CupertinoPageRoute(builder: (context) => Nav()),
-        //       (route) => false);
-        // } else {
+        if (devices.contains(androidInfo.androidId)) {
+          Utils.showToast("This device is already registered",
+              color: Colors.red);
+          await Navigator.pushAndRemoveUntil(
+              context,
+              CupertinoPageRoute(builder: (context) => Nav()),
+              (route) => false);
+        } else {
           await Navigator.pushAndRemoveUntil(
               context,
               CupertinoPageRoute(builder: (context) => EnterDetails()),
               (route) => false);
-        // }
+        }
       }
     } catch (e) {
       Navigator.of(context, rootNavigator: true).pop();

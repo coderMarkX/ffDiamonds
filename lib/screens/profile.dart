@@ -1,9 +1,9 @@
 // @dart=2.9
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ffdiamonds/auth/welcome.dart';
 import 'package:ffdiamonds/screens/activity/conatctUs.dart';
+import 'package:ffdiamonds/screens/activity/notifications.dart';
 import 'package:ffdiamonds/screens/navigation.dart';
 import 'package:ffdiamonds/services/FireBaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
@@ -16,6 +16,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -134,9 +135,7 @@ class _ProfileState extends State<Profile> {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
+                        SizedBox(height: 10.0),
                         Padding(
                           padding: EdgeInsets.only(right: 10.0, left: 10.0),
                           child: Row(
@@ -166,6 +165,7 @@ class _ProfileState extends State<Profile> {
                               ),
                               InkWell(
                                 onTap: () async {
+                                  userData = {};
                                   await FBService.logout();
                                   Navigator.pushAndRemoveUntil(
                                       context,
@@ -208,6 +208,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    print(userData);
     return SafeArea(
         child: Scaffold(
       body: SingleChildScrollView(
@@ -216,7 +217,7 @@ class _ProfileState extends State<Profile> {
           children: [
             Container(
                 width: Utils.mediaQ(context).width,
-                height: 250,
+                height: 300,
                 decoration: BoxDecoration(
                     color: primaryColor.withOpacity(.3),
                     borderRadius: BorderRadius.only(
@@ -230,6 +231,7 @@ class _ProfileState extends State<Profile> {
                       child: GestureDetector(
                         onTap: () {
                           showModalBottomSheet<void>(
+                            backgroundColor: primaryColor,
                             shape: RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.only(
                                     topLeft: const Radius.circular(30.0),
@@ -289,8 +291,13 @@ class _ProfileState extends State<Profile> {
                                                       ),
                                                     ),
                                                   )),
-                                        SizedBox(height: 100),
-                                        Utils.normalTextField("Name", name),
+                                        SizedBox(height: 50),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 25),
+                                          child: Utils.normalTextField(
+                                              "Name", name),
+                                        ),
                                         SizedBox(height: 50),
                                         GestureDetector(
                                             onTap: () async {
@@ -334,8 +341,8 @@ class _ProfileState extends State<Profile> {
                                                               Nav()),
                                                       (route) => false);
                                             },
-                                            child:
-                                                Utils.flatButton("Save", 150)),
+                                            child: Utils.flatButton("Save", 150,
+                                                color: secondaryColor)),
                                         SizedBox(height: 20),
                                       ],
                                     ),
@@ -359,23 +366,20 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                     Container(
-                      height: 100,
-                      width: 100,
+                      height: 150,
+                      width: 150,
                       decoration: BoxDecoration(
                           color: Colors.grey, shape: BoxShape.circle),
                       child: CircleAvatar(
-                        backgroundColor: primaryColor,
-                        child: CircleAvatar(
-                          radius: 100.0,
-                          child: ClipOval(
-                              child: CachedNetworkImage(
-                                  imageUrl: userData['profilePic'])),
-                          backgroundColor: Colors.white,
-                        ),
+                        radius: 100.0,
+                        child: ClipOval(
+                            child: CachedNetworkImage(
+                                imageUrl: userData['profilePic'])),
+                        backgroundColor: Colors.white,
                       ),
                     ),
                     Text(
-                        // "${userData['name'][0].toUpperCase() + userData['name'].substring(1)}" ??
+                        "${userData['name'][0].toUpperCase() + userData['name'].substring(1)}" ??
                             "",
                         style: TextStyle(
                             color: secondaryColor,
@@ -389,6 +393,11 @@ class _ProfileState extends State<Profile> {
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: Column(
                 children: [
+                  Utils.iosRoute(
+                      context,
+                      NotificationList(),
+                      Utils.optionTile(context,
+                          Icons.notifications_none_outlined, "Notification")),
                   Utils.iosRoute(
                       context,
                       ContactUs(),
@@ -411,17 +420,8 @@ class _ProfileState extends State<Profile> {
   }
 
   getData() async {
-    List featured = [];
     var a = await FBService.getData('otherApps');
-    var aa = a.value;
-    var k = aa.keys.toList();
-    for (var i in k) {
-      if (aa[i].containsValue(1)) {
-        featured.add(aa[i]);
-        featured.toSet().toList();
-      }
-    }
-    return featured;
+    return a.value;
   }
 
   Widget myApps() {
@@ -430,133 +430,187 @@ class _ProfileState extends State<Profile> {
         builder: (context, snap) {
           return (!snap.hasData)
               ? Container()
-              : Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15))),
-                  child: GridView.builder(
-                    physics: BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: MediaQuery.of(context).size.width /
-                            (MediaQuery.of(context).size.height / 1.7)),
-                    itemCount: snap.data.length,
-                    itemBuilder: (context, index) {
-                      var item = snap.data[index];
-                      List allSS = item['img'];
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                        child: GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet<void>(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: new BorderRadius.only(
-                                        topLeft: const Radius.circular(30.0),
-                                        topRight: const Radius.circular(30.0))),
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return StatefulBuilder(builder:
-                                      (BuildContext context,
-                                          StateSetter setState) {
-                                    return ListView(
-                                      physics: BouncingScrollPhysics(),
-                                      children: [
-                                        SizedBox(height: 20),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            SizedBox(width: 20),
-                                            SizedBox(width: 20),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(item['name'],
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 20)),
-                                                SizedBox(height: 10),
-                                                Container(
-                                                    alignment:
-                                                        Alignment.bottomRight,
-                                                    child: Utils.flatButton(
-                                                        "Download", 100,
-                                                        color:
-                                                            Colors.green[800],
-                                                        radius: 5,
-                                                        height: 35)),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(height: 20),
-                                        Container(
-                                          height: 200,
-                                          child: ListView.builder(
-                                              physics: BouncingScrollPhysics(),
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount: allSS.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index2) {
-                                                var ss = allSS[index2];
-                                                return Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 10),
-                                                    child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        child:
-                                                            Image.network(ss)));
-                                              }),
-                                        ),
-                                        Container(
-                                            padding: EdgeInsets.only(
-                                                left: 5, top: 5),
-                                            alignment: Alignment.topLeft,
-                                            child: Text('Description',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.w500))),
-                                        Container(
-                                            padding: EdgeInsets.only(
-                                                left: 5, top: 10),
-                                            alignment: Alignment.topLeft,
-                                            child: Text(item['desc'],
-                                                style: TextStyle(
-                                                    color: Colors.grey[700],
-                                                    fontSize: 17,
-                                                    fontWeight:
-                                                        FontWeight.w400)))
-                                      ],
+              : Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.topLeft,
+                      padding: EdgeInsets.only(left: 20, top: 20, bottom: 10),
+                      child: Text("Our Other Apps",
+                          style: TextStyle(
+                              fontSize: 21, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: primaryColor.withOpacity(.3),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15))),
+                        child: GridView.builder(
+                          physics: BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          gridDelegate:
+                              new SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  childAspectRatio: MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                      (MediaQuery.of(context).size.height /
+                                          1.3)),
+                          itemCount: snap.data.length,
+                          itemBuilder: (context, index) {
+                            var item = snap.data[index];
+                            List allSS = item['img'];
+                            return Padding(
+                              padding: EdgeInsets.all(5),
+                              child: GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet<void>(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: new BorderRadius.only(
+                                              topLeft:
+                                                  const Radius.circular(30.0),
+                                              topRight:
+                                                  const Radius.circular(30.0))),
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return StatefulBuilder(builder:
+                                            (BuildContext context,
+                                                StateSetter setState) {
+                                          return ListView(
+                                            physics: BouncingScrollPhysics(),
+                                            children: [
+                                              SizedBox(height: 20),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(width: 20),
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    child: Container(
+                                                        height: 100,
+                                                        child: Image.network(
+                                                            item['logo'])),
+                                                  ),
+                                                  SizedBox(width: 20),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(item['name'],
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: 20)),
+                                                      SizedBox(height: 10),
+                                                      GestureDetector(
+                                                        onTap: () async {
+                                                          try {
+                                                            await launch(
+                                                                item['url']);
+                                                          } catch (e) {
+                                                            await launch(
+                                                                "https://" +
+                                                                    item[
+                                                                        'url']);
+                                                          }
+                                                        },
+                                                        child: Container(
+                                                            alignment: Alignment
+                                                                .bottomRight,
+                                                            child: Utils.flatButton(
+                                                                "Download", 100,
+                                                                color: Colors
+                                                                    .green[800],
+                                                                radius: 5,
+                                                                height: 35)),
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 20),
+                                              Container(
+                                                height: 200,
+                                                child: ListView.builder(
+                                                    physics:
+                                                        BouncingScrollPhysics(),
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    itemCount: allSS.length,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index2) {
+                                                      var ss = allSS[index2];
+                                                      return Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      10),
+                                                          child: ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                              child:
+                                                                  Image.network(
+                                                                      ss)));
+                                                    }),
+                                              ),
+                                              Container(
+                                                  padding: EdgeInsets.only(
+                                                      left: 5, top: 5),
+                                                  alignment: Alignment.topLeft,
+                                                  child: Text('Description',
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight: FontWeight
+                                                              .w500))),
+                                              Container(
+                                                  padding: EdgeInsets.only(
+                                                      left: 5, top: 10),
+                                                  alignment: Alignment.topLeft,
+                                                  child: Text(item['desc'],
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.grey[700],
+                                                          fontSize: 17,
+                                                          fontWeight:
+                                                              FontWeight.w400)))
+                                            ],
+                                          );
+                                        });
+                                      },
                                     );
-                                  });
-                                },
-                              );
-                            },
-                            child: Column(
-                              children: [
-                                Container(
-                                    child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Image.network(item['l']))),
-                                Text(item['name'],
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 20))
-                              ],
-                            )),
-                      );
-                    },
-                  ),
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                          child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              child:
+                                                  Image.network(item['logo']))),
+                                      SizedBox(height: 10),
+                                      Text(item['name'],
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 20,
+                                              color: primaryColor))
+                                    ],
+                                  )),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                 );
         });
   }
