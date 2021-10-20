@@ -24,6 +24,18 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  
+  @override
+  void initState() {
+    super.initState();  updateName();
+  }
+
+  updateName(){
+  name.text = userData['name'];
+  setState(() {
+    
+  });
+  }
   final TextEditingController name = TextEditingController();
   File _image;
   final picker = ImagePicker();
@@ -208,7 +220,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    print(userData);
+    print(">> PRO $userData");
     return SafeArea(
         child: Scaffold(
       body: SingleChildScrollView(

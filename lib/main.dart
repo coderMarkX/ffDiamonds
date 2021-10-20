@@ -80,7 +80,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
     if (_auth.currentUser != null) {
       setState(() {
         loggedIn = true;

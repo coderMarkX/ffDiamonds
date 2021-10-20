@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ffdiamonds">
    <application
-        android:label="ffdiamonds"
+        android:label="FFDiamonds"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -40,7 +40,7 @@
 
             <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-4645095104446496~3525019990"/>
+            android:value="ca-app-pub-4686492418698370~8605953063"/>
 <activity
     android:name="com.yalantis.ucrop.UCropActivity"
     android:screenOrientation="portrait"

@@ -261,6 +261,7 @@ class _EnterDetailsState extends State<EnterDetails> {
             SizedBox(height: 50),
             GestureDetector(
                 onTap: () async {
+                       Utils.showLoadingDialog(this.context);
                   try {
                     final censuredEmail = FBService.getUser().email.replaceAll(
                         new RegExp('(?<=.)[^@](?=[^@]*?[^@]@)'), '*');
@@ -273,7 +274,7 @@ class _EnterDetailsState extends State<EnterDetails> {
                         .then((DataSnapshot dataSnapshot) async {
                       if (dataSnapshot.value != null) {
                         //limiting
-                        if (dataSnapshot.value['used'] ?? 0 < 10) {
+                        if ((dataSnapshot.value['used'] ?? 0) < 10) {
                           //getting first user data
                           var odata;
                           await db
@@ -285,7 +286,6 @@ class _EnterDetailsState extends State<EnterDetails> {
                             odata = dataSnapshot.value;
                           });
                           //updating first user data
-
                           var imgUrl = dp;
                           if (_image != null) {
                             String fileName = DateTime.now()
@@ -300,13 +300,12 @@ class _EnterDetailsState extends State<EnterDetails> {
                             imgUrl =
                                 await storageTaskSnapshot.ref.getDownloadURL();
                           }
-
+ //updating ref. user coins
                           FBService.updateData(
                               'user', dataSnapshot.value['uid'], {
-                            'name': name.text,
-                            'profilePic': imgUrl,
                             'coin': odata['coin'] + custom['onRefer'],
                           });
+
                           //updating used of FUser
                           db.reference().child("code").child(code.text).update({
                             'used': dataSnapshot.value['used'] ?? 0 + 1,
@@ -315,10 +314,11 @@ class _EnterDetailsState extends State<EnterDetails> {
                           //updating this user data 100 Coin
                           FBService.updateData(
                               'user', FBService.getUser().uid, {
+                                'name': name.text, 'profilePic': imgUrl,
                             'coin': custom['onRefRec'],
                           });
 
-                          // //Noti
+                          // //Notify to referrer user
                           await http.post(
                             Uri.parse('https://fcm.googleapis.com/fcm/send'),
                             headers: {
@@ -357,7 +357,9 @@ class _EnterDetailsState extends State<EnterDetails> {
                         Utils.showToast("Please enter valid refer code");
                       }
                     });
+                   
                   } catch (e) {
+                      
                     print(e);
                   }
                 },

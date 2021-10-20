@@ -7,9 +7,11 @@ import 'package:ffdiamonds/services/FireBaseServices.dart';
 import 'package:ffdiamonds/utils/common.dart';
 import 'package:ffdiamonds/utils/const.dart';
 import 'package:ffdiamonds/utils/globadData.dart';
+import 'package:flutter/cupertino.dart';
 // import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
@@ -42,13 +44,42 @@ class _HomeState extends State<Home> {
               child: Column(
                 children: [
                   Padding(
-                      padding: EdgeInsets.only(
-                          top: 15, left: 16, right: 16, bottom: 10),
-                      child: Utils.iosRoute(
-                          context,
-                          MyGame(),
-                          Utils.optionTile(
-                              context, Icons.gamepad_outlined, "Play Game"))),
+                                 padding: EdgeInsets.all(10),
+                    child: GestureDetector(
+                      onTap: (){
+                                  Navigator.push(
+              context, CupertinoPageRoute(builder: (context) => MyGame()));
+                      },
+                      child: Container(
+                        height: 80,
+                        
+                                decoration: BoxDecoration(
+                                color:Colors.red[800],
+                                borderRadius: BorderRadius.all(Radius.circular(20))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text( "Play Game",
+                      style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 30,
+                          fontWeight: FontWeight.w800)),
+                          Icon(SimpleLineIcons.game_controller, color:primaryColor, size: 50)
+                                  ],
+                                ),
+                    
+                      ),
+                    ),
+                  ),
+
+                  // Padding(
+                  //     padding: EdgeInsets.only(
+                  //         top: 15, left: 16, right: 16, bottom: 10),
+                  //     child: Utils.iosRoute(
+                  //         context,
+                  //         MyGame(),
+                  //         Utils.optionTile(
+                  //             context, Icons.gamepad_outlined, "Play Game"))),
                   Divider(),
                   Padding(
                     padding: EdgeInsets.only(
@@ -149,10 +180,23 @@ class _HomeState extends State<Home> {
                                                                         secondaryColor))),
                                                         CircleAvatar(
                                                             radius: 70,
+                                             
+                                                            
+                                             
                                                             backgroundImage:
                                                                 CachedNetworkImageProvider(
                                                                     item[
-                                                                        'logo'])),
+                                                                        'logo'],
+                                                                                        errorListener: 
+                                                                                        
+                                                                                        
+                                                                                        () {
+
+                                                                                        }
+                                         
+                                                      
+                                                      
+                                                      )),
                                                         SizedBox(height: 15),
                                                         Text(item['name'],
                                                             style: TextStyle(

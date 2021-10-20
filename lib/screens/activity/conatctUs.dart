@@ -196,7 +196,7 @@ class _ContactUsState extends State<ContactUs> {
                           phone.text.isEmpty ||
                           msg.text.isEmpty ||
                           _image == null) {
-                        Utils.showToast("You must fill all fields");
+                        Utils.showToast("You must fill all details first");
                       } else {
                         Utils.showLoadingDialog(context);
                         var reference = FirebaseStorage.instance

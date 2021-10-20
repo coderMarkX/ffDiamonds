@@ -10,6 +10,7 @@ import 'package:ffdiamonds/utils/globadData.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Nav extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class Nav extends StatefulWidget {
 }
 
 class _NavState extends State<Nav> {
-  List<Widget> pages = <Widget>[Home(), Wallet(), Profile()];
+  List<Widget> pages = <Widget>[Home(), Wallet()];
   int _index = 0;
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -27,6 +28,8 @@ class _NavState extends State<Nav> {
   );
 
   Future<void> _initPackageInfo() async {
+    await setUser();
+    pages.add(Profile());
     final PackageInfo info = await PackageInfo.fromPlatform();
     setState(() {
       _packageInfo = info;
@@ -95,19 +98,6 @@ class _NavState extends State<Nav> {
                                   InkWell(
                                     onTap: () {
                                       exit(0);
-                                      // SharedPreferences prefs =
-                                      //     await SharedPreferences.getInstance();
-                                      // prefs.setString('id', null);
-                                      // prefs.setString('type', null);
-                                      // prefs.setString('comId', null);
-                                      // userData.clear();
-                                      // Navigator.pushAndRemoveUntil(
-                                      //     context,
-                                      //     CupertinoPageRoute(
-                                      //         builder: (context) =>
-                                      //             EnterMobile() //LoginEmail(),
-                                      //         ),
-                                      //     (Route<dynamic> route) => false);
                                     },
                                     child: Container(
                                       width:
@@ -144,12 +134,12 @@ class _NavState extends State<Nav> {
 
   @override
   Widget build(BuildContext context) {
-    // if (custom != null &&
-    //     int.parse(custom['isUpdate'].replaceAll(".", "")) >
-    //         int.parse(_packageInfo.version.replaceAll(".", "")))
-    //   WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //     await updatePopup(context);
-    //   });
+    if (custom != null &&
+        int.parse(custom['isUpdate'].replaceAll(".", "")) >
+            int.parse(_packageInfo.version.replaceAll(".", "")))
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await updatePopup(context);
+      });
 
     return WillPopScope(
       onWillPop: _onExit,
@@ -195,24 +185,30 @@ class _NavState extends State<Nav> {
                     children: <Widget>[
                       Container(
                         alignment: Alignment.topLeft,
-                        child: Text("asdasddas sdfsdfdf ?",
+                        child: Text("Update FFDiamonds ?",
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.w700)),
                       ),
                       SizedBox(height: 20),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text("update",
-                            style: TextStyle(
-                                fontSize: 17, color: Colors.grey[800])),
+                      GestureDetector(
+                        onTap: ()async{
+                          await launch(custom['apkUrl']);
+                        },
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          child: Text("Download Size: 26.04 MB",
+                              style: TextStyle(
+                                  fontSize: 17, color: Colors.grey[800])),
+                        ),
                       ),
                       SizedBox(height: 20),
                       Container(
                         alignment: Alignment.topLeft,
                         child: Text("""
-asdasdfjasbfhasbfhb
-asdasdasf
-sdgagsdfgadhadhdh
+FFDiamonds recommends that you
+udpate to the latest version.
+You can keep using this app while
+downloading the update.
 """),
                       ),
                       SizedBox(height: 20),

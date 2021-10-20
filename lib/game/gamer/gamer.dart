@@ -245,7 +245,6 @@ class GameControl extends State<Game> with RouteAware {
         _data.setRange(1, line + 1, _data);
         _data[0] = List.filled(GAME_PAD_MATRIX_W, 0);
       });
-      debugPrint("clear lines : $clearLines");
 
       _cleared += clearLines.length;
       _points += clearLines.length * _level * 5;
@@ -383,7 +382,7 @@ class GameControl extends State<Game> with RouteAware {
         mixed[i][j] = value;
       }
     }
-    debugPrint("game states : $_states");
+
     return GameState(
         mixed, _states, _level, _sound.mute, _points, _cleared, _next,
         child: widget.child);

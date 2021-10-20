@@ -43,6 +43,8 @@ class _SignupState extends State<Signup> {
         FBService.updateData('user', FBService.getUser().uid, {
           'uid': _auth.currentUser.uid,
           'email': _email.text,
+          'name':_email.text.substring(0, 7),
+          'profilePic':dp,
           'password': _password.text,
           'coin': custom['onRegister'],
           'fcm': fcm,

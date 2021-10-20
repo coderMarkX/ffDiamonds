@@ -20,13 +20,19 @@ class Wallet extends StatefulWidget {
 
 class _WalletState extends State<Wallet> {
   //AD
-  String testDevice = 'YOUR_DEVICE_ID';
+  String testDevice = '2D28AB5B60484343A7A6007F0057D91C';
   int maxFailedLoadAttempts = 3;
 
   static final AdRequest request = AdRequest(
-    keywords: <String>['foo', 'bar'],
-    contentUrl: 'http://foo.com/bar.html',
-    nonPersonalizedAds: true,
+    keywords: <String>[
+      'gaming',
+      'tiktok',
+      'chatting',
+      'google',
+      'facebook',
+      'app',
+      'game'
+    ],
   );
 
   InterstitialAd _interstitialAd;
@@ -44,11 +50,10 @@ class _WalletState extends State<Wallet> {
 
   void _createInterstitialAd() {
     InterstitialAd.load(
-        adUnitId: InterstitialAd.testAdUnitId,
+        adUnitId: 'ca-app-pub-4686492418698370/9523760591',
         request: request,
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {
-            print('$ad loaded');
             _interstitialAd = ad;
             _numInterstitialLoadAttempts = 0;
             _interstitialAd.setImmersiveMode(true);
@@ -81,7 +86,7 @@ class _WalletState extends State<Wallet> {
         _createInterstitialAd();
       },
       onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-        print('$ad onAdFailedToShowFullScreenContent: $error');
+        // print('$ad onAdFailedToShowFullScreenContent: $error');
         ad.dispose();
         _createInterstitialAd();
       },
@@ -92,7 +97,7 @@ class _WalletState extends State<Wallet> {
 
   void _createRewardedAd() {
     RewardedAd.load(
-        adUnitId: RewardedAd.testAdUnitId,
+        adUnitId: 'ca-app-pub-4686492418698370/9140617213',
         request: request,
         rewardedAdLoadCallback: RewardedAdLoadCallback(
           onAdLoaded: (RewardedAd ad) {
@@ -116,15 +121,16 @@ class _WalletState extends State<Wallet> {
       return;
     }
     _rewardedAd.fullScreenContentCallback = FullScreenContentCallback(
-      onAdShowedFullScreenContent: (RewardedAd ad) =>
-          print('ad onAdShowedFullScreenContent.'),
+      onAdShowedFullScreenContent: (RewardedAd ad) => {
+        // print('ad onAdShowedFullScreenContent.'),
+      },
       onAdDismissedFullScreenContent: (RewardedAd ad) {
         Utils.success(context, text: 'Congratulation 🎉', time: 3);
         ad.dispose();
         _createRewardedAd();
       },
       onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-        print('$ad onAdFailedToShowFullScreenContent: $error');
+        // print('$ad onAdFailedToShowFullScreenContent: $error');
         ad.dispose();
         _createRewardedAd();
       },
@@ -161,8 +167,6 @@ class _WalletState extends State<Wallet> {
                     stream: FBService.getDataStream(
                         'user', FBService.getUser().uid),
                     builder: (context, snap) {
-                      print(">>>>>>>>>>");
-                      print(custom);
                       var data = snap?.data?.snapshot?.value ?? [];
                       coin = data['coin'] ?? 0;
                       return !snap.hasData
@@ -176,9 +180,8 @@ class _WalletState extends State<Wallet> {
                                 color: primaryColor,
                               ),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
+                                  SizedBox(height: 40),
                                   Text("Available Points",
                                       style: TextStyle(
                                           color: Colors.white.withOpacity(.9),
@@ -188,7 +191,7 @@ class _WalletState extends State<Wallet> {
                                   Text(data['coin'].toString(),
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 40)),
-                                  SizedBox(height: 10),
+                                  SizedBox(height: 15),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
@@ -202,7 +205,7 @@ class _WalletState extends State<Wallet> {
                                         },
                                         child: Container(
                                           margin: EdgeInsets.only(right: 20),
-                                          height: 50,
+                                          height: 40,
                                           width: 110,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.all(
@@ -328,7 +331,7 @@ class _WalletState extends State<Wallet> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // print("ok");
+                        print("ok");
                         showModalBottomSheet<void>(
                           isScrollControlled: true,
                           shape: RoundedRectangleBorder(
@@ -346,15 +349,23 @@ class _WalletState extends State<Wallet> {
                                           .viewInsets
                                           .bottom),
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Container(
                                           height: 170,
                                           child: Lottie.asset(
                                               'assets/animation/share.json')),
+                                      SizedBox(height: 20),
                                       Container(
-                                        height: 100,
+                                          alignment: Alignment.topLeft,
+                                          padding: EdgeInsets.only(
+                                              left: 10, top: 10, bottom: 5),
+                                          child: Text("Your referrer code",
+                                              style: TextStyle(
+                                                  color: primaryColor,
+                                                  fontWeight:
+                                                      FontWeight.bold))),
+                                      Container(
+                                        height: 60,
                                         width: Utils.mediaQ(context).width,
                                         child: Row(
                                           mainAxisAlignment:
@@ -397,8 +408,7 @@ class _WalletState extends State<Wallet> {
                                       GestureDetector(
                                           onTap: () {
                                             Share.share(
-                                                'check out my website https://example.com',
-                                                subject: 'Look what I made!');
+                                                '${custom['shareText']} \n  ${custom['siteUrl']} \n Use My code : ${userData['code']}');
                                           },
                                           child:
                                               Utils.flatButton("Share", 150)),
@@ -450,6 +460,7 @@ class _WalletState extends State<Wallet> {
                 ),
               ),
             ),
+            SizedBox(height: 70),
           ],
         ),
       ),

@@ -31,7 +31,7 @@ class FBService {
   }
 
   static updateData2(String key, String key2, String key3, var data) {
-    return db.reference().child(key).child(key2).child(key).update(data);
+    return db.reference().child(key).child(key2).child(key3).update(data);
   }
 
   static getDataStream(String key, String key2) {

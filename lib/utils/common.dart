@@ -210,6 +210,7 @@ class Utils {
       tColor = Colors.white,
       bColor = Colors.black}) {
     final snackBar = SnackBar(
+
       content: Row(
         children: [
           Icon(icon, color: tColor),
