@@ -28463,6 +28463,34 @@
     <meta content="website" property="og:type">
 </head>
 
+
+<script>
+    // api url
+    const api_url =
+        "https://api.npoint.io/867ba211f7a6ce7611ba";
+
+    // Defining async function
+    async function getapi(url) {
+        const response = await fetch(url);
+        var data = await response.json();
+        console.log(data);
+        document.getElementById("logo").src = data.logo; 
+        document.getElementById("appUrl").href = data.url; 
+        document.getElementById("appUrl2").href = data.url; 
+        document.getElementById("ss1").src = data.ss1; 
+        document.getElementById("ss2").src = data.ss2; 
+        document.getElementById("ss3").src = data.ss3; 
+        document.getElementById("ss4").src = data.ss4; 
+        document.getElementById("ss5").src = data.ss5; 
+        document.getElementById("ss6").src = data.ss6; 
+    }
+
+    // Calling that async function
+    getapi(api_url);
+
+</script>
+
+
 <body id="yDmH0d" jscontroller="pjICDe" jsaction="rcuQ6b:npT2md; click:FAbpgf; auxclick:FAbpgf"
     class="tQj5Y ghyPEc IqBfM e2G3Fb b30Rkd yb6DRb" data-has-footer="true" data-iw="360" data-ih="682">
 
@@ -28589,8 +28617,8 @@
                             jsmodel="hc6Ubd" c-wiz>
                             <div class="mCvSge"><span jscontroller="iTkSdb"
                                     jsaction="rcuQ6b:mFxOzd; click:ebq3Kd(preventDefault=false);uSLH4d:Wga3Zb"
-                                    data-is-post-redirect-failure="false"><a class="EnrYee U8Ww7d "
-                                        href="https://play.app.goo.gl/?link=https://play.google.com/store/apps/details?id=com.dts.freefireth&amp;ddl=1&amp;pcampaignid=web_ddl_1">Open
+                                    data-is-post-redirect-failure="false"><a id = 'appUrl2' class="EnrYee U8Ww7d "
+                                       >Open
                                         in Play Store app</a></span></div>
                             <c-data id="i8"></c-data>
                         </c-wiz>
@@ -28609,8 +28637,7 @@
                                             <div class="IhQXhb">
                                                 <div class="hkhL9e">
                                                     <div class="xSyT2c"><img
-                                                            src="https://play-lh.googleusercontent.com/07AssEcPx9DwBj4AxOTv5PHfrxbsr92efAnMUcHtvALpFQjWZwDhdot9PvAb5Tpt3D8=s100-rw"
-                                                            srcset="https://play-lh.googleusercontent.com/07AssEcPx9DwBj4AxOTv5PHfrxbsr92efAnMUcHtvALpFQjWZwDhdot9PvAb5Tpt3D8=s200-rw 2x"
+                                                            id = 'logo'
                                                             class="T75of sHb2Xb" aria-hidden="true" alt="Cover art"
                                                             itemprop="image" /></div>
                                                 </div>
@@ -28625,8 +28652,8 @@
                                                              
                                                                 class="hrTbp R8zArc">FF Diamonds Pvt.
                                                                 Ltd.</a></span><span class="T32cc UAO9ie"><a
-                                                                itemprop="genre" href="/store/apps/category/BUSINESS"
-                                                                class="hrTbp R8zArc">Business</a></span></div>
+                                                                itemprop="genre" href="/store/apps/category/GAME_CASUAL"
+                                                                class="hrTbp R8zArc">Casual</a></span></div>
                                                     <div class="T9A3Nb "></div>
                                                     <div class="T9A3Nb ">
                                                         <div class="KmO8jd"><img
@@ -28653,7 +28680,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div><span class="AYi5wd TBRnV"><span class=""
-                                                                        aria-label="5468 ratings">5468</span><span
+                                                                        aria-label="523 ratings">523</span><span
                                                                         class="O3QoBc qLorRc"></span></span>
                                                             </div>
                                                             <c-data id="i12" jsdata=" V4l1v;_;3"></c-data>
@@ -28669,7 +28696,9 @@
                                                     <c-wiz jsrenderer="grWkAb" jsshadow jsdata="deferred-i14"
                                                         data-p="%.@.[&quot;com.dts.freefireth&quot;,7]]"
                                                         data-node-index="1;0" autoupdate jsmodel="hc6Ubd" c-wiz>
-                                                        <div><span class="oocvOe"><button aria-label="Install"
+                                                        <div><span class="oocvOe">
+                                                            <a id = "appUrl">
+                                                            <button aria-label="Install"
                                                                     class=" LkLjZd ScJHi HPiPcc IfEcue "
                                                                     jscontroller="chfSwc" jsaction="MH7vAb"
                                                                     jsmodel="UfnShf"
@@ -28682,7 +28711,10 @@
                                                                             <meta itemprop="url"
                                                                                 content="https://play.google.com/store/apps/details?id=com.dts.freefireth&amp;rdid=com.dts.freefireth&amp;feature=md&amp;offerId">
                                                                             <meta itemprop="price" content="0">
-                                                                        </span></span>Install</button></span></div>
+                                                                        </span></span>Install</button>
+                                                                    </a>
+                                                                    
+                                                                    </span></div>
                                             
                                                     </c-wiz>
                                                     <c-data id="i13" jsdata=" sCuaec;_;13 OKeYaf;_;14 pH8t9b;_;7">
@@ -28755,24 +28787,21 @@
                                                             aria-label="Open screenshot 0" jscontroller="DeWHJf"
                                                             jsaction="click:O1htCb" jsname="WR0adb"
                                                             data-screenshot-item-index="0"><img
-                                                                src="https://play-lh.googleusercontent.com/4sncFORbQ7Xym-SmTw983k4sClkqvsHBd8i3T__I4KX06CC1SKKjumCao_RcrzOPaaU=w360-h220-rw"
-                                                                srcset="https://play-lh.googleusercontent.com/4sncFORbQ7Xym-SmTw983k4sClkqvsHBd8i3T__I4KX06CC1SKKjumCao_RcrzOPaaU=w720-h440-rw 2x"
+                                                                id = 'ss1'
                                                                 class="T75of FPPIIf" aria-hidden="true" width="350"
                                                                 height="220" alt="Screenshot Image"
                                                                 itemprop="image" /></button><button class="Q4vdJd"
                                                             aria-label="Open screenshot 1" jscontroller="DeWHJf"
                                                             jsaction="click:O1htCb" jsname="WR0adb"
                                                             data-screenshot-item-index="1"><img
-                                                                src="https://play-lh.googleusercontent.com/lYwUjlAeF0zWl8jnJ2VNwaEMTeq3eOjieBPFQpRenHj7wcgiYalnIMkTUMx_gpudXDA=w360-h220-rw"
-                                                                srcset="https://play-lh.googleusercontent.com/lYwUjlAeF0zWl8jnJ2VNwaEMTeq3eOjieBPFQpRenHj7wcgiYalnIMkTUMx_gpudXDA=w720-h440-rw 2x"
+                                                                id = 'ss2'
                                                                 class="T75of FPPIIf" aria-hidden="true" width="350"
                                                                 height="220" alt="Screenshot Image"
                                                                 itemprop="image" /></button><button class="Q4vdJd"
                                                             aria-label="Open screenshot 2" jscontroller="DeWHJf"
                                                             jsaction="click:O1htCb" jsname="WR0adb"
                                                             data-screenshot-item-index="2"><img
-                                                                data-src="https://play-lh.googleusercontent.com/VscbmvIuY9YWbzh3lu1DTqqUOZgPJ9dneGsPPbuTGHlsVl4r6PtcwGaeX_NZzq-KuPBs=w360-h220-rw"
-                                                                data-ils="3" jsaction="rcuQ6b:trigger.M8vzZb;"
+                                                                id = 'ss3'
                                                                 data-srcset="https://play-lh.googleusercontent.com/VscbmvIuY9YWbzh3lu1DTqqUOZgPJ9dneGsPPbuTGHlsVl4r6PtcwGaeX_NZzq-KuPBs=w720-h440-rw 2x"
                                                                 src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                                                                 class="T75of FPPIIf" aria-hidden="true" width="350"
@@ -28781,8 +28810,7 @@
                                                             aria-label="Open screenshot 3" jscontroller="DeWHJf"
                                                             jsaction="click:O1htCb" jsname="WR0adb"
                                                             data-screenshot-item-index="3"><img
-                                                                data-src="https://play-lh.googleusercontent.com/rznKvCCbnI_0KMtjrKpwls8NBIqguWx6ca9gKdRuphQcXzEyrnKrfXhTdLyg4taj58M=w360-h220-rw"
-                                                                data-ils="3" jsaction="rcuQ6b:trigger.M8vzZb;"
+                                                                id = 'ss4'
                                                                 data-srcset="https://play-lh.googleusercontent.com/rznKvCCbnI_0KMtjrKpwls8NBIqguWx6ca9gKdRuphQcXzEyrnKrfXhTdLyg4taj58M=w720-h440-rw 2x"
                                                                 src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                                                                 class="T75of FPPIIf" aria-hidden="true" width="350"
@@ -28791,8 +28819,7 @@
                                                             aria-label="Open screenshot 4" jscontroller="DeWHJf"
                                                             jsaction="click:O1htCb" jsname="WR0adb"
                                                             data-screenshot-item-index="4"><img
-                                                                data-src="https://play-lh.googleusercontent.com/nPruGs1Fih0Vhk3xdvsk8A24s9P7uyyEF-hsjl6lO1c8GUB_-4TTfHgDzI4RHDNR5qE=w360-h220-rw"
-                                                                data-ils="3" jsaction="rcuQ6b:trigger.M8vzZb;"
+                                                                id = 'ss5'
                                                                 data-srcset="https://play-lh.googleusercontent.com/nPruGs1Fih0Vhk3xdvsk8A24s9P7uyyEF-hsjl6lO1c8GUB_-4TTfHgDzI4RHDNR5qE=w720-h440-rw 2x"
                                                                 src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                                                                 class="T75of FPPIIf" aria-hidden="true" width="350"
@@ -28801,8 +28828,7 @@
                                                             aria-label="Open screenshot 5" jscontroller="DeWHJf"
                                                             jsaction="click:O1htCb" jsname="WR0adb"
                                                             data-screenshot-item-index="5"><img
-                                                                data-src="https://play-lh.googleusercontent.com/vRtFvw7VhvmGTjSpf5R2605m-24we0NM6m1iTUfEyBPURiWKZkURtdaf_u1xWfcsTxo=w360-h220-rw"
-                                                                data-ils="3" jsaction="rcuQ6b:trigger.M8vzZb;"
+                                                                id = 'ss6'
                                                                 data-srcset="https://play-lh.googleusercontent.com/vRtFvw7VhvmGTjSpf5R2605m-24we0NM6m1iTUfEyBPURiWKZkURtdaf_u1xWfcsTxo=w720-h440-rw 2x"
                                                                 src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                                                                 class="T75of FPPIIf" aria-hidden="true" width="350"
@@ -28810,24 +28836,8 @@
                                                                 itemprop="image" /></button><button class="Q4vdJd"
                                                             aria-label="Open screenshot 6" jscontroller="DeWHJf"
                                                             jsaction="click:O1htCb" jsname="WR0adb"
-                                                            data-screenshot-item-index="6"><img
-                                                                data-src="https://play-lh.googleusercontent.com/l1f7rKK0rZAEQ6lsKG-csD7KoIhSxElWA3e0XJ6yeNHhx82_Ffad5-PL9BLTFagzo8U=w360-h220-rw"
-                                                                data-ils="3" jsaction="rcuQ6b:trigger.M8vzZb;"
-                                                                data-srcset="https://play-lh.googleusercontent.com/l1f7rKK0rZAEQ6lsKG-csD7KoIhSxElWA3e0XJ6yeNHhx82_Ffad5-PL9BLTFagzo8U=w720-h440-rw 2x"
-                                                                src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                                                                class="T75of FPPIIf" aria-hidden="true" width="350"
-                                                                height="220" alt="Screenshot Image"
-                                                                itemprop="image" /></button><button class="Q4vdJd"
-                                                            aria-label="Open screenshot 7" jscontroller="DeWHJf"
-                                                            jsaction="click:O1htCb" jsname="WR0adb"
-                                                            data-screenshot-item-index="7"><img
-                                                                data-src="https://play-lh.googleusercontent.com/jtTqfl7VK7QkzXoTiCrZAWXe4_rJG_Mf7fsmnwzKNzuNFS9U8560e0WZnH8vrX9NaXo=w360-h220-rw"
-                                                                data-ils="3" jsaction="rcuQ6b:trigger.M8vzZb;"
-                                                                data-srcset="https://play-lh.googleusercontent.com/jtTqfl7VK7QkzXoTiCrZAWXe4_rJG_Mf7fsmnwzKNzuNFS9U8560e0WZnH8vrX9NaXo=w720-h440-rw 2x"
-                                                                src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                                                                class="T75of FPPIIf" aria-hidden="true" width="350"
-                                                                height="220" alt="Screenshot Image"
-                                                                itemprop="image" /></button></div>
+                                                            data-screenshot-item-index="6">
+                                                            </button></div>
                                                 </div>
                                             </div>
                                             <c-data id="i21" jsdata=" OKeYaf;_;14"></c-data>
@@ -28943,7 +28953,7 @@
                                                         </div>
                                                     </div>
                                                 </div><span class="EymY4b"><span class="O3QoBc hzfjkd"></span><span
-                                                        class="" aria-label="5468 ratings">5468</span> total</span>
+                                                        class="" aria-label="534 ratings">534</span> total</span>
                                             </div>
                                             <div class="VEF2C">
                                                 <div class="mMF0fd"><span class="Gn2mNd">5</span><span
@@ -29086,8 +29096,8 @@
                                                         <div class="IQ1z0d"><span class="htlgb">
                                                                 <div><a href="https://FF Diamonds.com/"
                                                                         class="hrTbp ">Visit website</a></div>
-                                                                <div><a href="mailto:FF Diamonds.2020@gmail.com"
-                                                                        class="hrTbp euBY6b">ffdiamonds@gmail.com</a>
+                                                                <div><a href="mailto:ffdiamonds_pvt_ltd@gmail.com"
+                                                                        class="hrTbp euBY6b">ffdiamonds_pvt_ltd@gmail.com</a>
                                                                 </div>
                                                             </span></div>
                                                     </span>
